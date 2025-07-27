@@ -1,0 +1,30 @@
+[project]
+name = "pysteg"
+version = "0.1.0"
+description = "A basic GUI for steganography"
+authors = [
+    { name = "KisSCoOl", email = "kisscool@kisscool.net" },
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "stegano>=2.0.0",
+    "pyqt6>=6.9.1",
+    "cryptography>=45.0.5",
+]
+
+[dependency-groups]
+dev = [
+    "pip-audit>=2.9.0",
+    "pyright>=1.1.403",
+    "pytest>=8.4.1",
+    "ruff>=0.12.5",
+]
+
+[tool.pyright]
+include = ["app"]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"

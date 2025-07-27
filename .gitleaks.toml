@@ -1,0 +1,13 @@
+# Title for the gitleaks configuration file.
+title = "Gitleak config"
+
+[extend]
+useDefaults = true
+
+[allowlist]
+paths = [
+  '''.pytest_cache/''',
+  '''.ruff_cache/''',
+  '''.venv/''',
+  '''__pycache__''',
+]
