@@ -66,11 +66,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-uv-
 
-    - name: Ruff
+    - name: Ruff (app)
       run: uv run ruff check ./app/
 
+    - name: Ruff (tests)
+      run: uv run ruff check ./tests/ --ignore S101
+
     - name: Pyright
-      run: uv run pyright ./app/ --threads 4
+      run: uv run pyright ./app/ ./tests/ --threads 4
 
   test:
     needs: ['pre-check', 'check']
@@ -100,7 +103,6 @@ jobs:
 
     - name: PyTest
       run: uv run pytest
-      continue-on-error: true
 
   scan:
     needs: ['pre-check']
