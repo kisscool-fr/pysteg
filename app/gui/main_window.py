@@ -45,11 +45,11 @@ class MainWindow(QMainWindow):
         rb_layout = QHBoxLayout()
 
         # Radio buttons for encryption/decryptions
-        rb_encrypt = QRadioButton('Encrypt')
+        rb_encrypt = QRadioButton("Encrypt")
         rb_encrypt.setChecked(True)
         rb_encrypt.clicked.connect(self.update_mode)  # type: ignore
 
-        rb_decrypt = QRadioButton('Decrypt')
+        rb_decrypt = QRadioButton("Decrypt")
         rb_decrypt.clicked.connect(self.update_mode)  # type: ignore
 
         rb_layout.addWidget(rb_encrypt)
@@ -83,29 +83,27 @@ class MainWindow(QMainWindow):
         button.clicked.connect(self.button_clicked)  # type: ignore
         layout.addWidget(button)
 
-
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-
     def update_mode(self):
         sender = self.sender()
         if isinstance(sender, QRadioButton) and sender.isChecked():
-            if sender.text() == 'Encrypt':
+            if sender.text() == "Encrypt":
                 self.mode = Mode.ENCRYPT
 
                 self.status_bar.showMessage("Encrypt mode selected", 2000)  # type: ignore
-                
+
                 self.findChild(QLabel, "mode_label").setText("Text to hide")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
                 self.findChild(QPushButton, "action_button").setText("Hide text")
                 self.findChild(QLineEdit, "file_selector").setText("")
-            elif sender.text() == 'Decrypt':
+            elif sender.text() == "Decrypt":
                 self.mode = Mode.DECRYPT
 
                 self.status_bar.showMessage("Decrypt mode selected", 2000)  # type: ignore
-                
+
                 self.findChild(QLabel, "mode_label").setText("Text revealed")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
                 self.findChild(QPushButton, "action_button").setText("Reveal text")
@@ -124,7 +122,7 @@ class MainWindow(QMainWindow):
             text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
 
             encrypted = crypto.encrypt(text)
-            
+
             file = self.findChild(QLineEdit, "file_selector").text()
             hide = file.replace(".png", "_hidden.png")
 
@@ -144,7 +142,6 @@ class MainWindow(QMainWindow):
                 self.status_bar.showMessage("Decryption successful", 2000)  # type: ignore
             except ValueError:
                 self.status_bar.showMessage("Decryption failed: Invalid data", 2000)  # type: ignore
-        
 
     def button_choose_file(self):
         image_input = QFileDialog()

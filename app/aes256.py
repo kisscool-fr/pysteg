@@ -20,7 +20,7 @@ class Crypto:
 
     def get_secret_key(self) -> bytes:
         return urandom(16)
-    
+
     def refresh_key(self):
         self.derived_key = self.derive_key(self.key.encode("utf-8"))
 

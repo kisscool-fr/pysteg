@@ -19,9 +19,11 @@ check:
 
 format:
 	uv run ruff check ./app/ --fix
+	uv run ruff check ./tests/ --ignore S101 --fix
+	uv run ruff format ./app/ ./tests/ 
 
 style:
-	uv run pyright ./app/ --threads 4
+	uv run pyright ./app/ ./tests/ --threads 4
 
 test:
 	uv run pytest
