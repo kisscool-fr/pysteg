@@ -1,6 +1,8 @@
 # PySteg
 
-A very basic GUI for steganography operation
+A very basic GUI for steganography operation.
+
+Build as a replacement of [Steganozorus](https://thomasnerrant.com/steganozorus.htm) ©️ 2002 - [Thomas Nerrant](https://thomasnerrant.com/)
 
 ## Usage
 
@@ -8,6 +10,22 @@ A very basic GUI for steganography operation
 make install
 make run
 ```
+## Require
+
+- Python 3.13
+- uv
+
+## Roadmap
+
+- Choose output file name
+- Add support more encryption algorithm
+- Add support for keyfiles
+- Add support for more medias (images, audio, video)
+- Add deniability support
+- More languages
+- Add binary release
+- Improve design ¯\_(ツ)_/¯
+
 ## Screenshot
 
 ![PySteg main window](/docs/main-window.jpg "PySteg main window")
