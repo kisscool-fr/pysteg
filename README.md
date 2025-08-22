@@ -20,11 +20,11 @@ make run
 - Choose output file name
 - Add support more encryption algorithm
 - Add support for keyfiles
-- Add support for more medias (images, audio, video)
+- Add support for more medias (images, audio, video, drag & drop ...)
 - Add deniability support
 - More languages
 - Add binary release
-- Improve design ¯\_(ツ)_/¯
+- Improve design ¯\\_(ツ)_/¯
 
 ## Screenshot
 
