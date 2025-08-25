@@ -2,43 +2,33 @@ import base64
 from os import urandom
 
 from cryptography.exceptions import InvalidKey
+from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.primitives.ciphers import Cipher
-from cryptography.hazmat.primitives.ciphers import CipherContext
-from cryptography.hazmat.primitives.ciphers import algorithms
-from cryptography.hazmat.primitives.ciphers import modes
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+SALT_SIZE = 16
+NONCE_SIZE = 12
 
 
 class Crypto:
-    def __init__(self, key: str):
-        self.key = key
-        self.secret_key = self.get_secret_key()
+    def __init__(self, shared_secret: str):
+        self.shared_secret = shared_secret
+        self.salt = self.get_salt()
         self.refresh_key()
 
-    def get_secret_key(self) -> bytes:
-        return urandom(16)
+    def get_salt(self) -> bytes:
+        return urandom(SALT_SIZE)
 
     def refresh_key(self):
-        self.derived_key = self.derive_key(self.key.encode("utf-8"))
-
-    def get_encryptor(self, iv: bytes) -> CipherContext:
-        return Cipher(
-            algorithms.AES(self.derived_key), modes.CFB(iv), backend=default_backend()
-        ).encryptor()
-
-    def get_decryptor(self, iv: bytes) -> CipherContext:
-        return Cipher(
-            algorithms.AES(self.derived_key), modes.CFB(iv), backend=default_backend()
-        ).decryptor()
+        self.derived_key = self.derive_key(self.shared_secret.encode("utf-8"))
 
     def derive_key(self, password: bytes, iterations: int = 100000) -> bytes:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=self.secret_key,
+            salt=self.salt,
             iterations=iterations,
             backend=default_backend(),
         )
@@ -48,7 +38,7 @@ class Crypto:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=len(key),
-            salt=self.secret_key,
+            salt=self.salt,
             iterations=iterations,
             backend=default_backend(),
         )
@@ -59,23 +49,27 @@ class Crypto:
             return False
 
     def encrypt(self, value: str) -> str:
-        iv = urandom(16)
-        padder = padding.PKCS7(algorithms.AES(self.derived_key).block_size).padder()
-        padded_data = padder.update(value.encode("utf-8")) + padder.finalize()
-        encryptor = self.get_encryptor(iv)
-        encrypted_text = encryptor.update(padded_data) + encryptor.finalize()
-        return base64.b64encode(iv + self.secret_key + encrypted_text).decode("utf-8")
+        nonce = urandom(NONCE_SIZE)
+
+        aesgcm = AESGCM(self.derived_key)
+
+        ciphertext = aesgcm.encrypt(nonce, value.encode("utf-8"), None)
+
+        return base64.b64encode(self.salt + nonce + ciphertext).decode("utf-8")
 
     def decrypt(self, value: str) -> str:
-        encrypted_data_bytes = base64.b64decode(value.encode("utf-8"))
+        try:
+            encrypted_data = base64.b64decode(value.encode("utf-8"))
 
-        iv = encrypted_data_bytes[:16]
-        self.secret_key = encrypted_data_bytes[16:32]
-        ciphertext = encrypted_data_bytes[32:]
+            self.salt = encrypted_data[:16]
+            self.refresh_key()
+            nonce = encrypted_data[16:28]
+            ciphertext = encrypted_data[28:]
 
-        self.refresh_key()
+            aesgcm = AESGCM(self.derived_key)
 
-        padder = padding.PKCS7(algorithms.AES(self.derived_key).block_size).unpadder()
-        decrypted_data = self.get_decryptor(iv).update(ciphertext)
-        unpadded = padder.update(decrypted_data) + padder.finalize()
-        return unpadded.decode("utf-8")
+            plaintext = aesgcm.decrypt(nonce, ciphertext, None)
+
+            return plaintext.decode("utf-8")
+        except (InvalidTag, ValueError) as err:
+            raise ValueError("Decryption failed: Data has been tampered with") from err

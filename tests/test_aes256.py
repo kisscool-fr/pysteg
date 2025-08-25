@@ -1,5 +1,4 @@
 import pytest
-from cryptography.hazmat.primitives.ciphers import CipherContext
 
 from app.aes256 import Crypto
 
@@ -12,51 +11,10 @@ def crypto() -> Crypto:
     return Crypto("test_key")
 
 
-def test_get_secret_key(crypto: Crypto):
-    secret_key = crypto.get_secret_key()
+def test_get_salt(crypto: Crypto):
+    secret_key = crypto.get_salt()
     assert isinstance(secret_key, bytes)
     assert len(secret_key) == AES_IV_SIZE
-
-
-def test_get_encryptor(crypto: Crypto):
-    # Generate test IV
-    test_iv = b"\x00" * AES_IV_SIZE
-
-    # Get encryptor
-    encryptor = crypto.get_encryptor(test_iv)
-
-    # Verify encryptor type
-    assert isinstance(encryptor, CipherContext)
-
-    # Test encryption functionality
-    test_data = b"test message"
-    encrypted = encryptor.update(test_data) + encryptor.finalize()
-
-    # Verify encrypted data is different from input
-    assert encrypted != test_data
-
-    # Verify encrypted data is not empty
-    assert len(encrypted) > 0
-
-
-def test_get_decryptor(crypto: Crypto):
-    # Generate test IV
-    test_iv = b"\x00" * AES_IV_SIZE
-
-    # Get decryptor
-    decryptor = crypto.get_decryptor(test_iv)
-
-    # Verify decryptor type
-    assert isinstance(decryptor, CipherContext)
-
-    # Test decryption functionality
-    test_data = b"test message"
-    encryptor = crypto.get_encryptor(test_iv)
-    encrypted_data = encryptor.update(test_data) + encryptor.finalize()
-    decrypted = decryptor.update(encrypted_data) + decryptor.finalize()
-
-    # Verify decrypted data matches original input
-    assert decrypted == test_data
 
 
 def test_derive_key(crypto: Crypto):
@@ -92,9 +50,8 @@ def test_encrypt(crypto: Crypto):
 
 def test_decrypt(crypto: Crypto):
     test_value = "test message"
-    encrypted_value = crypto.encrypt(test_value)
 
-    decrypted_value = crypto.decrypt(encrypted_value)
+    decrypted_value = crypto.decrypt(crypto.encrypt(test_value))
 
     # Verify decrypted value matches original
     assert decrypted_value == test_value
