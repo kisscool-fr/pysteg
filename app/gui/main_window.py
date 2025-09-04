@@ -35,8 +35,13 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
         self.setGeometry(100, 100, 800, 600)
-
         self.setFixedSize(QSize(300, 500))
+
+        screen = self.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
+        window_size = self.geometry()
+        x = (screen.width() - window_size.width()) // 2
+        y = (screen.height() - window_size.height()) // 2
+        self.move(x, y)
 
         self.mode = Mode.ENCRYPT
         self.status_bar = self.statusBar()
