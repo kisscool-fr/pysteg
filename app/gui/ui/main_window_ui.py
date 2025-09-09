@@ -33,7 +33,7 @@ class MainWindowUI:
 
         window.status_bar = window.statusBar()  # pyright: ignore[reportAttributeAccessIssue]
 
-    def center_window(self, window: QMainWindow):  # noqa: PLR6301
+    def center_window(self, window: QMainWindow):
         screen = window.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
         window_size = window.geometry()
         x = (screen.width() - window_size.width()) // 2
