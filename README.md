@@ -1,5 +1,7 @@
 # PySteg
 
+![Build Status](https://github.com/kisscool-fr/pysteg/actions/workflows/main.yml/badge.svg?branch=master)
+
 A very basic GUI for steganography operation.
 
 Build as a replacement of [Steganozorus](https://thomasnerrant.com/steganozorus.htm) ©️ 2002 - [Thomas Nerrant](https://thomasnerrant.com/)
