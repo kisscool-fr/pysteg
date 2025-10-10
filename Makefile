@@ -2,6 +2,13 @@
 
 .phony: run
 
+init:
+	uv python install 3.13
+	uv venv --python 3.13
+
+clean:
+	uv venv --clear
+
 install:
 	uv sync
 
@@ -22,7 +29,7 @@ format:
 	uv run ruff check ./tests/ --ignore S101 --fix
 	uv run ruff format ./app/ ./tests/ 
 
-style:
+typing:
 	uv run pyright ./app/ ./tests/ --threads 4
 
 test:
