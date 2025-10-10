@@ -81,30 +81,35 @@ class MainWindow(QMainWindow):
 
         crypto = Crypto(secret)
 
-        if self.mode == Mode.ENCRYPT:
-            text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
+        try:
+            if self.mode == Mode.ENCRYPT:
+                text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
 
-            encrypted = crypto.encrypt(text)
+                encrypted = crypto.encrypt(text)
 
-            file = self.findChild(QLineEdit, "file_selector").text()
-            hide = file.replace(".png", "_hidden.png")
+                file = self.findChild(QLineEdit, "file_selector").text()
+                hide = file.replace(".png", "_hidden.png")
 
-            secret = lsb.hide(file, encrypted, generators.eratosthenes())
-            secret.save(hide)
+                secret = lsb.hide(file, encrypted, generators.eratosthenes())
+                secret.save(hide)
 
-            self.status_bar.showMessage("Encryption successful", 2000)  # type: ignore
-        else:
-            file = self.findChild(QLineEdit, "file_selector").text()
+                self.status_bar.showMessage("Encryption successful", 2000)  # type: ignore
+            else:
+                file = self.findChild(QLineEdit, "file_selector").text()
 
-            hide_text = lsb.reveal(file, generators.eratosthenes())
+                hide_text = lsb.reveal(file, generators.eratosthenes())
 
-            try:
-                decrypted = crypto.decrypt(hide_text)
-                self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
+                try:
+                    decrypted = crypto.decrypt(hide_text)
+                    self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
-                self.status_bar.showMessage("Decryption successful", 2000)  # type: ignore
-            except ValueError:
-                self.status_bar.showMessage("Decryption failed: Invalid data", 2000)  # type: ignore
+                    self.status_bar.showMessage("Decryption successful", 2000)  # type: ignore
+                except ValueError:
+                    self.status_bar.showMessage("Decryption failed: Invalid data", 2000)  # type: ignore
+        except AttributeError:
+            self.status_bar.showMessage("Please choose a working mode", 2000)  # type: ignore
+        except FileNotFoundError:
+            self.status_bar.showMessage("Please choose a file", 2000)  # type: ignore
 
     def _handle_file_selection(self):
         image_input = QFileDialog()
