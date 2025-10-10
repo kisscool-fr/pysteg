@@ -1,3 +1,5 @@
+![PySteg app icon](icon.png)
+
 # PySteg
 
 ![Build Status](https://github.com/kisscool-fr/pysteg/actions/workflows/main.yml/badge.svg?branch=master)

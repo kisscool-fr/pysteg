@@ -1,4 +1,5 @@
 from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QVBoxLayout
@@ -17,6 +18,7 @@ from app.gui.ui.components.text_line import TextLine
 class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
+        window.setWindowIcon(QIcon("icon.png"))
         window.setFixedSize(QSize(300, 500))
 
         self.central_widget = QWidget()
