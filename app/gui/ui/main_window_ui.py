@@ -8,6 +8,8 @@ from PyQt6.QtWidgets import QWidget
 from app.constants import APP_NAME
 from app.constants import APP_VERSION
 from app.constants import ASSETS_DIRECTORY
+from app.constants import ICON_LOCK
+from app.constants import ICON_UNLOCK
 from app.gui.models.mode import Mode
 from app.gui.ui.components.file_selector import ReadOnlyFileSelector
 from app.gui.ui.components.push_button import PushButton
@@ -46,8 +48,8 @@ class MainWindowUI:
     def _create_mode_buttons(self):
         rb_layout = QHBoxLayout()
 
-        self.rb_encrypt = PushButton("🔐 Hide", Mode.ENCRYPT)
-        self.rb_decrypt = PushButton("🔓 Reveal", Mode.DECRYPT)
+        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.ENCRYPT)
+        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.DECRYPT)
         rb_layout.addWidget(self.rb_encrypt)
         rb_layout.addWidget(self.rb_decrypt)
         self.layout.addLayout(rb_layout)
@@ -77,5 +79,5 @@ class MainWindowUI:
         self.layout.addWidget(file_selector)
 
     def _create_action_button(self):
-        self.action_button = PushButton("Hide Text", "action_button")
+        self.action_button = PushButton(f"{ICON_LOCK} Hide Text", "action_button")
         self.layout.addWidget(self.action_button)

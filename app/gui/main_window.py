@@ -13,6 +13,8 @@ from stegano.lsb import generators  # type: ignore
 
 from app.aes256 import Crypto
 from app.constants import APP_NAME
+from app.constants import ICON_LOCK
+from app.constants import ICON_UNLOCK
 from app.gui.controllers.actions import ActionController
 from app.gui.models.mode import WindowModel
 from app.gui.ui.components.push_button import PushButton
@@ -59,7 +61,7 @@ class MainWindow(QMainWindow):
 
                 self.findChild(QLabel, "mode_label").setText("Text to hide")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
-                self.findChild(QPushButton, "action_button").setText("Hide text")
+                self.findChild(QPushButton, "action_button").setText(f"{ICON_LOCK} Hide text")
                 self.findChild(QLineEdit, "file_selector").setText("")
             elif sender.objectName() == Mode.DECRYPT:
                 self.mode = Mode.DECRYPT
@@ -68,7 +70,7 @@ class MainWindow(QMainWindow):
 
                 self.findChild(QLabel, "mode_label").setText("Text revealed")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
-                self.findChild(QPushButton, "action_button").setText("Reveal text")
+                self.findChild(QPushButton, "action_button").setText(f"{ICON_UNLOCK} Reveal text")
                 self.findChild(QLineEdit, "file_selector").setText("")
 
     def _handle_action(self):
