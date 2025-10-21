@@ -106,7 +106,7 @@ jobs:
 
   scan:
     needs: ['pre-check']
-    name: gitleaks
+    name: security audit
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout code
@@ -118,3 +118,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITLEAKS_ENABLE_COMMENTS: false
+    - name: pip-audit
+      uses: pypa/gh-action-pip-audit@v1.1.0
+      with:
+        inputs: .

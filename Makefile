@@ -36,5 +36,7 @@ test:
 	uv run pytest
 
 audit:
-	uv run pip-audit
+	uv run pip-audit .
 	gitleaks dir ./ --max-decode-depth 5
+
+ci: check format typing test audit
