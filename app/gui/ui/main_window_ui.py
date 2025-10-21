@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QWidget
 
 from app.constants import APP_NAME
 from app.constants import APP_VERSION
+from app.constants import ASSETS_DIRECTORY
 from app.gui.models.mode import Mode
 from app.gui.ui.components.file_selector import ReadOnlyFileSelector
 from app.gui.ui.components.push_button import PushButton
@@ -18,7 +19,7 @@ from app.gui.ui.components.text_line import TextLine
 class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
-        window.setWindowIcon(QIcon("icon.png"))
+        window.setWindowIcon(QIcon(f"{ASSETS_DIRECTORY}/icons/icon.png"))
         window.setFixedSize(QSize(300, 500))
 
         self.central_widget = QWidget()
@@ -45,8 +46,8 @@ class MainWindowUI:
     def _create_mode_buttons(self):
         rb_layout = QHBoxLayout()
 
-        self.rb_encrypt = PushButton("Hide", Mode.ENCRYPT)
-        self.rb_decrypt = PushButton("Reveal", Mode.DECRYPT)
+        self.rb_encrypt = PushButton("🔐 Hide", Mode.ENCRYPT)
+        self.rb_decrypt = PushButton("🔓 Reveal", Mode.DECRYPT)
         rb_layout.addWidget(self.rb_encrypt)
         rb_layout.addWidget(self.rb_decrypt)
         self.layout.addLayout(rb_layout)
@@ -69,11 +70,11 @@ class MainWindowUI:
         image_label = TextLabel("Image file (.png only)", "image_label")
         self.layout.addWidget(image_label)
 
-        file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
-        self.layout.addWidget(file_selector)
-
         self.button_file = PushButton("Choose file", "select_file_button")
         self.layout.addWidget(self.button_file)
+
+        file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
+        self.layout.addWidget(file_selector)
 
     def _create_action_button(self):
         self.action_button = PushButton("Hide Text", "action_button")
