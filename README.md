@@ -1,4 +1,4 @@
-![PySteg app icon](icon.png)
+![PySteg app icon](assets/icons/icon.png)
 
 # PySteg
 
