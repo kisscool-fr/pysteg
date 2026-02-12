@@ -103,13 +103,16 @@ class MainWindow(QMainWindow):
             else:
                 file = self.findChild(QLineEdit, "file_selector").text()
 
-                hide_text = lsb.reveal(file, generators.eratosthenes())
-
                 try:
+                    hide_text = lsb.reveal(file, generators.eratosthenes())
                     decrypted = crypto.decrypt(hide_text)
                     self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
                     self.status_bar.showMessage("Decryption successful", 2000)  # type: ignore
+                except IndexError:
+                    self.status_bar.showMessage(  # type: ignore
+                        "Decryption failed: No hidden text found", 2000
+                    )
                 except ValueError:
                     self.status_bar.showMessage("Decryption failed: Invalid data", 2000)  # type: ignore
         except AttributeError:
