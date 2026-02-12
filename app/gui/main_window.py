@@ -61,7 +61,9 @@ class MainWindow(QMainWindow):
 
                 self.findChild(QLabel, "mode_label").setText("Text to hide")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
-                self.findChild(QPushButton, "action_button").setText(f"{ICON_LOCK} Hide text")
+                self.findChild(QPushButton, "action_button").setText(
+                    f"{ICON_LOCK} Hide text"
+                )
                 self.findChild(QLineEdit, "file_selector").setText("")
             elif sender.objectName() == Mode.DECRYPT:
                 self.mode = Mode.DECRYPT
@@ -70,7 +72,9 @@ class MainWindow(QMainWindow):
 
                 self.findChild(QLabel, "mode_label").setText("Text revealed")
                 self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
-                self.findChild(QPushButton, "action_button").setText(f"{ICON_UNLOCK} Reveal text")
+                self.findChild(QPushButton, "action_button").setText(
+                    f"{ICON_UNLOCK} Reveal text"
+                )
                 self.findChild(QLineEdit, "file_selector").setText("")
 
     def _handle_action(self):
