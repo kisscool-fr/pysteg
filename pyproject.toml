@@ -9,7 +9,7 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "stegano>=2.1.0",
+    "stegano>=2.2.0",
     "pyqt6>=6.10.2",
     "cryptography>=46.0.5",
 ]
