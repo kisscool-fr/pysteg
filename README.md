@@ -2,7 +2,7 @@
 
 # PySteg
 
-[![CI](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml)
+[![CI](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml)
 
 A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256 encryption.
 

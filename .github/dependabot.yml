@@ -7,7 +7,7 @@ updates:
   # Python dependencies (uv / pyproject.toml)
   - package-ecosystem: "uv"
     directory: "/"
-    target-branch: "master"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -24,7 +24,7 @@ updates:
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "master"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
