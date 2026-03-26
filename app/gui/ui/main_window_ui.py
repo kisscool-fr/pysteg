@@ -1,5 +1,6 @@
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QFrame
 from PyQt6.QtWidgets import QHBoxLayout
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QVBoxLayout
@@ -11,6 +12,7 @@ from app.constants import ASSETS_DIRECTORY
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
 from app.gui.models.mode import Mode
+from app.gui.ui import styles
 from app.gui.ui.components.file_selector import ReadOnlyFileSelector
 from app.gui.ui.components.push_button import PushButton
 from app.gui.ui.components.text_input import TextInput
@@ -28,6 +30,7 @@ class MainWindowUI:
         self.layout = QVBoxLayout()
 
         self._create_mode_buttons()
+        self._create_accent_bar()
         self._create_text_section()
         self._create_secret_section()
         self._create_file_section()
@@ -37,6 +40,8 @@ class MainWindowUI:
         window.setCentralWidget(self.central_widget)
 
         window.status_bar = window.statusBar()  # pyright: ignore[reportAttributeAccessIssue]
+
+        self.apply_mode_style(Mode.ENCRYPT)
 
     def center_window(self, window: QMainWindow):
         screen = window.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
@@ -53,6 +58,25 @@ class MainWindowUI:
         rb_layout.addWidget(self.rb_encrypt)
         rb_layout.addWidget(self.rb_decrypt)
         self.layout.addLayout(rb_layout)
+
+    def _create_accent_bar(self):
+        self.accent_bar = QFrame()
+        self.accent_bar.setFrameShape(QFrame.Shape.HLine)
+        self.accent_bar.setFixedHeight(3)
+        self.layout.addWidget(self.accent_bar)
+
+    def apply_mode_style(self, mode: Mode):
+        if mode == Mode.ENCRYPT:
+            palette = styles.HIDE_ACCENT
+            self.rb_encrypt.setStyleSheet(styles.mode_button_active(palette))
+            self.rb_decrypt.setStyleSheet(styles.mode_button_inactive())
+        else:
+            palette = styles.REVEAL_ACCENT
+            self.rb_encrypt.setStyleSheet(styles.mode_button_inactive())
+            self.rb_decrypt.setStyleSheet(styles.mode_button_active(palette))
+
+        self.accent_bar.setStyleSheet(styles.accent_bar(palette))
+        self.action_button.setStyleSheet(styles.action_button(palette))
 
     def _create_text_section(self):
         text_label = TextLabel("Text to hide", "mode_label")
