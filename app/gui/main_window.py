@@ -1,6 +1,4 @@
 import gettext
-from enum import StrEnum
-from enum import auto
 
 from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QLabel
@@ -16,6 +14,7 @@ from app.constants import APP_NAME
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
 from app.gui.controllers.actions import ActionController
+from app.gui.models.mode import Mode
 from app.gui.models.mode import WindowModel
 from app.gui.ui.components.push_button import PushButton
 from app.gui.ui.main_window_ui import MainWindowUI
@@ -24,11 +23,6 @@ from app.gui.validators.input import InputValidator
 gettext.bindtextdomain(APP_NAME, "locales")
 gettext.textdomain(APP_NAME)
 _ = gettext.gettext
-
-
-class Mode(StrEnum):
-    ENCRYPT = auto()
-    DECRYPT = auto()
 
 
 class MainWindow(QMainWindow):
@@ -65,6 +59,7 @@ class MainWindow(QMainWindow):
                     f"{ICON_LOCK} Hide text"
                 )
                 self.findChild(QLineEdit, "file_selector").setText("")
+                self.ui.apply_mode_style(Mode.ENCRYPT)
             elif sender.objectName() == Mode.DECRYPT:
                 self.mode = Mode.DECRYPT
 
@@ -76,6 +71,7 @@ class MainWindow(QMainWindow):
                     f"{ICON_UNLOCK} Reveal text"
                 )
                 self.findChild(QLineEdit, "file_selector").setText("")
+                self.ui.apply_mode_style(Mode.DECRYPT)
 
     def _handle_action(self):
         secret = self.findChild(QLineEdit, "secret_input").text()
