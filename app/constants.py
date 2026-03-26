@@ -1,5 +1,7 @@
+from importlib.metadata import version
+
 APP_NAME = "PySteg"
-APP_VERSION = "0.1"
+APP_VERSION = version("pysteg")
 
 SHARED_SECRET_MIN_LENGTH = 8
 
