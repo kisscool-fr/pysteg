@@ -77,3 +77,11 @@ audit:
 
 # CI pipeline: check lockfile, format, typecheck, test, audit
 ci: check format typing test audit
+
+# Print the current project version
+version:
+    @uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])"
+
+# Bump version, commit, tag, and push (bump = patch|minor|major|X.Y.Z)
+release bump="patch":
+    uv run python scripts/release.py {{ bump }}
