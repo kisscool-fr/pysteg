@@ -1,6 +1,4 @@
 import gettext
-from enum import StrEnum
-from enum import auto
 
 from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QLabel
@@ -8,14 +6,13 @@ from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QPlainTextEdit
 from PyQt6.QtWidgets import QPushButton
-from stegano import lsb  # type: ignore
-from stegano.lsb import generators  # type: ignore
 
 from app.aes256 import Crypto
 from app.constants import APP_NAME
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
 from app.gui.controllers.actions import ActionController
+from app.gui.models.mode import Mode
 from app.gui.models.mode import WindowModel
 from app.gui.ui.components.push_button import PushButton
 from app.gui.ui.main_window_ui import MainWindowUI
@@ -24,11 +21,6 @@ from app.gui.validators.input import InputValidator
 gettext.bindtextdomain(APP_NAME, "locales")
 gettext.textdomain(APP_NAME)
 _ = gettext.gettext
-
-
-class Mode(StrEnum):
-    ENCRYPT = auto()
-    DECRYPT = auto()
 
 
 class MainWindow(QMainWindow):
@@ -96,15 +88,16 @@ class MainWindow(QMainWindow):
                 file = self.findChild(QLineEdit, "file_selector").text()
                 hide = file.replace(".png", "_hidden.png")
 
-                secret = lsb.hide(file, encrypted, generators.eratosthenes())
-                secret.save(hide)
+                _, status = self.controller.hide(
+                    source=file, destination=hide, text=encrypted
+                )
 
-                self.status_bar.showMessage("Encryption successful", 2000)  # type: ignore
+                self.status_bar.showMessage(status, 2000)  # type: ignore
             else:
                 file = self.findChild(QLineEdit, "file_selector").text()
 
                 try:
-                    hide_text = lsb.reveal(file, generators.eratosthenes())
+                    hide_text = self.controller.reveal(source=file)[1]
                     decrypted = crypto.decrypt(hide_text)
                     self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
