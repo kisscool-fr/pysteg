@@ -6,8 +6,6 @@ from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QPlainTextEdit
 from PyQt6.QtWidgets import QPushButton
-from stegano import lsb  # type: ignore
-from stegano.lsb import generators  # type: ignore
 
 from app.aes256 import Crypto
 from app.constants import APP_NAME
@@ -92,15 +90,16 @@ class MainWindow(QMainWindow):
                 file = self.findChild(QLineEdit, "file_selector").text()
                 hide = file.replace(".png", "_hidden.png")
 
-                secret = lsb.hide(file, encrypted, generators.eratosthenes())
-                secret.save(hide)
+                _, status = self.controller.hide(
+                    source=file, destination=hide, text=encrypted
+                )
 
-                self.status_bar.showMessage("Encryption successful", 2000)  # type: ignore
+                self.status_bar.showMessage(status, 2000)  # type: ignore
             else:
                 file = self.findChild(QLineEdit, "file_selector").text()
 
                 try:
-                    hide_text = lsb.reveal(file, generators.eratosthenes())
+                    hide_text = self.controller.reveal(source=file)[1]
                     decrypted = crypto.decrypt(hide_text)
                     self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
