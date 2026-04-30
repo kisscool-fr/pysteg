@@ -12,6 +12,7 @@ dependencies = [
     "stegano>=2.3.0",
     "pyqt6>=6.10.2",
     "cryptography>=46.0.6",
+    "pillow>=12.2.0",
 ]
 
 [dependency-groups]

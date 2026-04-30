@@ -674,6 +674,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "cryptography" },
+    { name = "pillow" },
     { name = "pyqt6" },
     { name = "stegano" },
 ]
@@ -689,6 +690,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "cryptography", specifier = ">=46.0.6" },
+    { name = "pillow", specifier = ">=12.2.0" },
     { name = "pyqt6", specifier = ">=6.10.2" },
     { name = "stegano", specifier = ">=2.3.0" },
 ]
