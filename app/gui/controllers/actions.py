@@ -1,6 +1,8 @@
 from enum import StrEnum
 from enum import auto
 
+from PIL import Image
+from stegano import exifHeader  # type: ignore
 from stegano import lsb  # type: ignore
 from stegano.lsb import generators  # type: ignore
 
@@ -40,10 +42,27 @@ class ActionController:
             return False, str(e)
 
     def hide(self, source: str, destination: str, text: str) -> tuple[bool, str]:
-        data = lsb.hide(source, text, generators.eratosthenes())
-        data.save(destination)
+        im = Image.open(source)
+
+        match im.format:
+            case "PNG" | "BMP":
+                data = lsb.hide(source, text, generators.eratosthenes())
+                data.save(destination)
+            case "JPEG" | "TIFF":
+                exifHeader.hide(source, destination, secret_message=text)  # type: ignore
+            case _:
+                return False, "Unsupported image format"
+
         return True, "Encryption successful"
 
     def reveal(self, source: str) -> tuple[bool, str]:
-        text = lsb.reveal(source, generators.eratosthenes())
+        im = Image.open(source)
+        match im.format:
+            case "PNG" | "BMP":
+                text = lsb.reveal(source, generators.eratosthenes())
+            case "JPEG" | "TIFF":
+                text = exifHeader.reveal(source).decode()  # type: ignore
+            case _:
+                return False, "Unsupported image format"
+
         return True, text
