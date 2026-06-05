@@ -33,7 +33,7 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"tests/**" = ["S101", "S106"]  # assert and hardcoded test values are idiomatic in pytest
+"tests/**" = ["S101", "S105", "S106"]  # assert and hardcoded test values are idiomatic in pytest
 
 [lint.isort]
 force-single-line = true

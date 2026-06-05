@@ -56,7 +56,7 @@ check:
 format:
     echo Formatting the code...
     uv run ruff check ./app/ --fix
-    uv run ruff check ./tests/ --ignore S101 --fix
+    uv run ruff check ./tests/ --fix
     uv run ruff format ./app/ ./tests/
 
 # Type-check with pyright

@@ -75,7 +75,7 @@ jobs:
         run: uv run ruff check ./app/
 
       - name: Ruff check (tests)
-        run: uv run ruff check ./tests/ --ignore S101
+        run: uv run ruff check ./tests/
 
       - name: Ruff format
         run: uv run ruff format --check ./app/ ./tests/

@@ -9,7 +9,6 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtWidgets import QPlainTextEdit
 from PyQt6.QtWidgets import QPushButton
 
-from app.aes256 import Crypto
 from app.constants import APP_NAME
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
@@ -19,6 +18,8 @@ from app.gui.models.mode import WindowModel
 from app.gui.ui.components.push_button import PushButton
 from app.gui.ui.main_window_ui import MainWindowUI
 from app.gui.validators.input import InputValidator
+from app.payload import extract_payload
+from app.payload import prepare_payload
 
 gettext.bindtextdomain(APP_NAME, "locales")
 gettext.textdomain(APP_NAME)
@@ -113,10 +114,9 @@ class MainWindow(QMainWindow):
         try:
             if self.mode == Mode.ENCRYPT:
                 text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
-                if plain_text:
-                    payload = text
-                else:
-                    payload = Crypto(self.ui.secret_input.text()).encrypt(text)
+                payload = prepare_payload(
+                    text, self.ui.secret_input.text(), plain_text=plain_text
+                )
 
                 filename = self.findChild(QLineEdit, "file_selector").text()
                 _, ext = os.path.splitext(filename)
@@ -133,20 +133,27 @@ class MainWindow(QMainWindow):
                 try:
                     hide_text = self.controller.reveal(source=filename)[1]
 
-                    if plain_text:
-                        result = hide_text
-                    else:
-                        result = Crypto(self.ui.secret_input.text()).decrypt(hide_text)
-
+                    result = extract_payload(
+                        hide_text, self.ui.secret_input.text(), plain_text=plain_text
+                    )
                     self.findChild(QPlainTextEdit, "text_input").setPlainText(result)
-                    status = "Text revealed successfully" if plain_text else "Decryption successful"
+
+                    status = (
+                        "Text revealed successfully"
+                        if plain_text
+                        else "Decryption successful"
+                    )
                     self.status_bar.showMessage(status, 2000)  # type: ignore
                 except IndexError:
                     self.status_bar.showMessage(  # type: ignore
                         "Reveal failed: No hidden text found", 2000
                     )
                 except ValueError:
-                    failure = "Reveal failed: Invalid data" if plain_text else "Decryption failed: Invalid data"
+                    failure = (
+                        "Reveal failed: Invalid data"
+                        if plain_text
+                        else "Decryption failed: Invalid data"
+                    )
                     self.status_bar.showMessage(failure, 2000)  # type: ignore
         except AttributeError:
             self.status_bar.showMessage("Please choose a working mode", 2000)  # type: ignore
