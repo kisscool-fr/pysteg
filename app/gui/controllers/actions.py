@@ -17,13 +17,20 @@ class Hidding(StrEnum):
 
 class Format(StrEnum):
     PNG = Hidding.LSB
-    JPG = Hidding.EXIF
+    BMP = Hidding.LSB
+    JPEG = Hidding.EXIF
     TIFF = Hidding.EXIF
 
 
 class ActionController:
     def __init__(self, model: WindowModel):
         self.model = model
+
+    def hidding_technique(self, pil_format: str | None) -> Hidding | None:
+        try:
+            return Format[pil_format or ""]  # type: ignore[return-value]
+        except KeyError:
+            return None
 
     def encrypt(self) -> tuple[bool, str]:
         try:
@@ -43,26 +50,22 @@ class ActionController:
 
     def hide(self, source: str, destination: str, text: str) -> tuple[bool, str]:
         im = Image.open(source)
-
-        match im.format:
-            case "PNG" | "BMP":
-                data = lsb.hide(source, text, generators.eratosthenes())
-                data.save(destination)
-            case "JPEG" | "TIFF":
+        match self.hidding_technique(im.format):
+            case Hidding.LSB:
+                lsb.hide(source, text, generators.eratosthenes()).save(destination)
+            case Hidding.EXIF:
                 exifHeader.hide(source, destination, secret_message=text)  # type: ignore
             case _:
                 return False, "Unsupported image format"
-
         return True, "Encryption successful"
 
     def reveal(self, source: str) -> tuple[bool, str]:
         im = Image.open(source)
-        match im.format:
-            case "PNG" | "BMP":
+        match self.hidding_technique(im.format):
+            case Hidding.LSB:
                 text = lsb.reveal(source, generators.eratosthenes())
-            case "JPEG" | "TIFF":
+            case Hidding.EXIF:
                 text = exifHeader.reveal(source).decode()  # type: ignore
             case _:
                 return False, "Unsupported image format"
-
         return True, text
