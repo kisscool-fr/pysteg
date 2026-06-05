@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self.ui.center_window(self)
 
         self._connect_signals()
+        self._apply_mode(Mode.ENCRYPT, notify=False)
 
     def _connect_signals(self):
         self.ui.rb_encrypt.clicked.connect(self._handle_mode_change)  # pyright: ignore[reportUnknownMemberType]
@@ -48,29 +49,35 @@ class MainWindow(QMainWindow):
 
         if isinstance(sender, PushButton):
             if sender.objectName() == Mode.ENCRYPT:
-                self.mode = Mode.ENCRYPT
+                self._apply_mode(Mode.ENCRYPT)
+            elif sender.objectName() == Mode.DECRYPT:
+                self._apply_mode(Mode.DECRYPT)
 
+    def _apply_mode(self, mode: Mode, *, notify: bool = True):
+        self.mode = mode
+        self.model.mode = mode
+
+        if mode == Mode.ENCRYPT:
+            if notify:
                 self.status_bar.showMessage("Hide mode selected", 2000)  # type: ignore
 
-                self.findChild(QLabel, "mode_label").setText("Text to hide")
-                self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
-                self.findChild(QPushButton, "action_button").setText(
-                    f"{ICON_LOCK} Hide text"
-                )
-                self.findChild(QLineEdit, "file_selector").setText("")
-                self.ui.apply_mode_style(Mode.ENCRYPT)
-            elif sender.objectName() == Mode.DECRYPT:
-                self.mode = Mode.DECRYPT
-
+            self.findChild(QLabel, "mode_label").setText("Text to hide")
+            self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
+            self.findChild(QPushButton, "action_button").setText(
+                f"{ICON_LOCK} Hide text"
+            )
+        else:
+            if notify:
                 self.status_bar.showMessage("Reveal mode selected", 2000)  # type: ignore
 
-                self.findChild(QLabel, "mode_label").setText("Text revealed")
-                self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
-                self.findChild(QPushButton, "action_button").setText(
-                    f"{ICON_UNLOCK} Reveal text"
-                )
-                self.findChild(QLineEdit, "file_selector").setText("")
-                self.ui.apply_mode_style(Mode.DECRYPT)
+            self.findChild(QLabel, "mode_label").setText("Text revealed")
+            self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
+            self.findChild(QPushButton, "action_button").setText(
+                f"{ICON_UNLOCK} Reveal text"
+            )
+
+        self.findChild(QLineEdit, "file_selector").setText("")
+        self.ui.apply_mode_style(mode)
 
     def _handle_action(self):
         secret = self.findChild(QLineEdit, "secret_input").text()
