@@ -1,5 +1,6 @@
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QCheckBox
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtWidgets import QHBoxLayout
 from PyQt6.QtWidgets import QMainWindow
@@ -101,8 +102,14 @@ class MainWindowUI:
         secret_label = TextLabel("Shared secret", "secret_label")
         self.layout.addWidget(secret_label)
 
-        secret_input = TextLine("", "secret_input")
-        self.layout.addWidget(secret_input)
+        secret_row = QHBoxLayout()
+        self.secret_input = TextLine("", "secret_input")
+        self.plain_text_checkbox = QCheckBox()
+        self.plain_text_checkbox.setObjectName("plain_text_checkbox")
+        self.plain_text_checkbox.setToolTip("Hide text in the image without encryption")
+        secret_row.addWidget(self.secret_input)
+        secret_row.addWidget(self.plain_text_checkbox)
+        self.layout.addLayout(secret_row)
 
     def _create_file_section(self):
         image_label = TextLabel("Cover image", "image_label")
