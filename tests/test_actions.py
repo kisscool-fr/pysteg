@@ -50,20 +50,20 @@ class TestFormat:
 class TestTechnique:
     @pytest.mark.parametrize("pil_format", ["PNG", "BMP"])
     def test_lsb_formats(self, controller: ActionController, pil_format: str) -> None:
-        assert controller.hidding_technique(pil_format) == Hidding.LSB
+        assert controller.get_hidding_technique(pil_format) == Hidding.LSB
 
     @pytest.mark.parametrize("pil_format", ["JPEG", "TIFF"])
     def test_exif_formats(self, controller: ActionController, pil_format: str) -> None:
-        assert controller.hidding_technique(pil_format) == Hidding.EXIF
+        assert controller.get_hidding_technique(pil_format) == Hidding.EXIF
 
     @pytest.mark.parametrize("pil_format", ["GIF", "WEBP", "ICO", ""])
     def test_unsupported_returns_none(
         self, controller: ActionController, pil_format: str
     ) -> None:
-        assert controller.hidding_technique(pil_format) is None
+        assert controller.get_hidding_technique(pil_format) is None
 
     def test_none_returns_none(self, controller: ActionController) -> None:
-        assert controller.hidding_technique(None) is None
+        assert controller.get_hidding_technique(None) is None
 
 
 # ---------------------------------------------------------------------------

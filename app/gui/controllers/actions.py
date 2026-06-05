@@ -26,7 +26,7 @@ class ActionController:
     def __init__(self, model: WindowModel):
         self.model = model
 
-    def hidding_technique(self, pil_format: str | None) -> Hidding | None:
+    def get_hidding_technique(self, pil_format: str | None) -> Hidding | None:
         try:
             return Format[pil_format or ""]  # type: ignore[return-value]
         except KeyError:
@@ -50,7 +50,7 @@ class ActionController:
 
     def hide(self, source: str, destination: str, text: str) -> tuple[bool, str]:
         im = Image.open(source)
-        match self.hidding_technique(im.format):
+        match self.get_hidding_technique(im.format):
             case Hidding.LSB:
                 lsb.hide(source, text, generators.eratosthenes()).save(destination)
             case Hidding.EXIF:
@@ -61,7 +61,7 @@ class ActionController:
 
     def reveal(self, source: str) -> tuple[bool, str]:
         im = Image.open(source)
-        match self.hidding_technique(im.format):
+        match self.get_hidding_technique(im.format):
             case Hidding.LSB:
                 text = lsb.reveal(source, generators.eratosthenes())
             case Hidding.EXIF:
