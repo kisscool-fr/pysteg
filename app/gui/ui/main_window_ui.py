@@ -24,16 +24,21 @@ class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
         window.setWindowIcon(QIcon(f"{ASSETS_DIRECTORY}/icons/icon.png"))
-        window.setFixedSize(QSize(300, 500))
+        window.setFixedSize(QSize(318, 507))
 
         self.central_widget = QWidget()
         self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(12, 12, 12, 12)
+        self.layout.setSpacing(8)
 
         self._create_mode_buttons()
         self._create_accent_bar()
         self._create_text_section()
+        self._add_separator()
         self._create_secret_section()
+        self._add_separator()
         self._create_file_section()
+        self._add_separator()
         self._create_action_button()
 
         self.central_widget.setLayout(self.layout)
@@ -62,8 +67,15 @@ class MainWindowUI:
     def _create_accent_bar(self):
         self.accent_bar = QFrame()
         self.accent_bar.setFrameShape(QFrame.Shape.HLine)
-        self.accent_bar.setFixedHeight(3)
+        self.accent_bar.setFixedHeight(2)
         self.layout.addWidget(self.accent_bar)
+
+    def _add_separator(self):
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.HLine)
+        separator.setFixedHeight(1)
+        separator.setStyleSheet(styles.separator())
+        self.layout.addWidget(separator)
 
     def apply_mode_style(self, mode: Mode):
         if mode == Mode.ENCRYPT:
@@ -97,6 +109,7 @@ class MainWindowUI:
         self.layout.addWidget(image_label)
 
         self.button_file = PushButton("Choose file", "select_file_button")
+        self.button_file.setStyleSheet(styles.secondary_button())
         self.layout.addWidget(self.button_file)
 
         file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
