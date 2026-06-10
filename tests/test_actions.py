@@ -81,7 +81,7 @@ class TestHide:
         saved = MagicMock()
         mock_lsb.hide.return_value = saved
 
-        ok, msg = controller.hide("src.png", "dst.png", "secret text")
+        ok, msg = controller.hide("src.png", "dst.png", "secret text", plain_text=False)
 
         mock_lsb.hide.assert_called_once()
         saved.save.assert_called_once_with("dst.png")
@@ -95,7 +95,7 @@ class TestHide:
     ) -> None:
         mock_image.open.return_value.format = "JPEG"
 
-        ok, msg = controller.hide("src.jpg", "dst.jpg", "secret text")
+        ok, msg = controller.hide("src.jpg", "dst.jpg", "secret text", plain_text=False)
 
         mock_exif.hide.assert_called_once_with(
             "src.jpg", "dst.jpg", secret_message="secret text"
@@ -114,7 +114,7 @@ class TestHide:
         controller: ActionController,
     ) -> None:
         mock_image.open.return_value.format = pil_format
-        ok, _ = controller.hide("src", "dst", "text")
+        ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
     @pytest.mark.parametrize("pil_format", ["JPEG", "TIFF"])
@@ -128,7 +128,7 @@ class TestHide:
         controller: ActionController,
     ) -> None:
         mock_image.open.return_value.format = pil_format
-        ok, _ = controller.hide("src", "dst", "text")
+        ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
     @patch("app.gui.controllers.actions.Image")
@@ -137,7 +137,7 @@ class TestHide:
     ) -> None:
         mock_image.open.return_value.format = "GIF"
 
-        ok, msg = controller.hide("src.gif", "dst.gif", "secret text")
+        ok, msg = controller.hide("src.gif", "dst.gif", "secret text", plain_text=False)
 
         assert ok is False
         assert msg == "Unsupported image format"
@@ -213,7 +213,7 @@ class TestEncryptDecrypt:
         controller = ActionController(model)
         _, ciphertext = controller.encrypt()
 
-        model.secret = "wrong_secret"  # noqa: S105
+        model.secret = "wrong_secret"
         ok, msg = controller.decrypt(ciphertext)
 
         assert ok is False

@@ -123,7 +123,10 @@ class MainWindow(QMainWindow):
                 hidename = filename.replace(ext, "_hidden" + ext)
 
                 _, status = self.controller.hide(
-                    source=filename, destination=hidename, text=payload, plain_text=plain_text
+                    source=filename,
+                    destination=hidename,
+                    text=payload,
+                    plain_text=plain_text,
                 )
 
                 self.status_bar.showMessage(status, 2000)  # type: ignore
