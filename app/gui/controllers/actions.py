@@ -51,8 +51,9 @@ class ActionController:
     def hide(
         self, source: str, destination: str, text: str, plain_text: bool
     ) -> tuple[bool, str]:
-        im = Image.open(source)
-        match self.get_hidding_technique(im.format):
+        with Image.open(source) as im:
+            technique = self.get_hidding_technique(im.format)
+        match technique:
             case Hidding.LSB:
                 lsb.hide(source, text, generators.eratosthenes()).save(destination)
             case Hidding.EXIF:
@@ -65,8 +66,9 @@ class ActionController:
         )
 
     def reveal(self, source: str) -> tuple[bool, str]:
-        im = Image.open(source)
-        match self.get_hidding_technique(im.format):
+        with Image.open(source) as im:
+            technique = self.get_hidding_technique(im.format)
+        match technique:
             case Hidding.LSB:
                 text = lsb.reveal(source, generators.eratosthenes())
             case Hidding.EXIF:

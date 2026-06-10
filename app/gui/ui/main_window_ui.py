@@ -92,11 +92,11 @@ class MainWindowUI:
         self.action_button.setStyleSheet(styles.action_button(palette))
 
     def _create_text_section(self):
-        text_label = TextLabel("Text to hide", "mode_label")
-        self.layout.addWidget(text_label)
+        self.mode_label = TextLabel("Text to hide", "mode_label")
+        self.layout.addWidget(self.mode_label)
 
-        text_input = TextInput("Enter text here...", "text_input")
-        self.layout.addWidget(text_input)
+        self.text_input = TextInput("Enter text here...", "text_input")
+        self.layout.addWidget(self.text_input)
 
     def _create_secret_section(self):
         secret_label = TextLabel("Shared secret", "secret_label")
@@ -119,8 +119,8 @@ class MainWindowUI:
         self.button_file.setStyleSheet(styles.secondary_button())
         self.layout.addWidget(self.button_file)
 
-        file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
-        self.layout.addWidget(file_selector)
+        self.file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
+        self.layout.addWidget(self.file_selector)
 
     def _create_action_button(self):
         self.action_button = PushButton(f"{ICON_LOCK} Hide Text", "action_button")

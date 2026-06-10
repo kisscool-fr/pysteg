@@ -2,12 +2,8 @@ import gettext
 from pathlib import Path
 
 from PyQt6.QtWidgets import QFileDialog
-from PyQt6.QtWidgets import QLabel
-from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QMessageBox
-from PyQt6.QtWidgets import QPlainTextEdit
-from PyQt6.QtWidgets import QPushButton
 
 from app.constants import APP_NAME
 from app.constants import ICON_LOCK
@@ -81,23 +77,19 @@ class MainWindow(QMainWindow):
             if notify:
                 self.status_bar.showMessage("Hide mode selected", 2000)  # type: ignore
 
-            self.findChild(QLabel, "mode_label").setText("Text to hide")
-            self.findChild(QPlainTextEdit, "text_input").setReadOnly(False)
-            self.findChild(QPushButton, "action_button").setText(
-                f"{ICON_LOCK} Hide text"
-            )
+            self.ui.mode_label.setText("Text to hide")
+            self.ui.text_input.setReadOnly(False)
+            self.ui.action_button.setText(f"{ICON_LOCK} Hide text")
         else:
             if notify:
                 self.status_bar.showMessage("Reveal mode selected", 2000)  # type: ignore
 
-            self.findChild(QLabel, "mode_label").setText("Text revealed")
-            self.findChild(QPlainTextEdit, "text_input").setReadOnly(True)
-            self.findChild(QPushButton, "action_button").setText(
-                f"{ICON_UNLOCK} Reveal text"
-            )
+            self.ui.mode_label.setText("Text revealed")
+            self.ui.text_input.setReadOnly(True)
+            self.ui.action_button.setText(f"{ICON_UNLOCK} Reveal text")
 
-        self.findChild(QPlainTextEdit, "text_input").setPlainText("")
-        self.findChild(QLineEdit, "file_selector").setText("")
+        self.ui.text_input.setPlainText("")
+        self.ui.file_selector.setText("")
         self.ui.secret_input.clear()
         self.ui.plain_text_checkbox.setChecked(False)
         self.ui.apply_mode_style(mode)
@@ -116,12 +108,12 @@ class MainWindow(QMainWindow):
 
         try:
             if self.mode == Mode.ENCRYPT:
-                text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
+                text = self.ui.text_input.toPlainText()
                 payload = prepare_payload(
                     text, self.ui.secret_input.text(), plain_text=plain_text
                 )
 
-                filename = self.findChild(QLineEdit, "file_selector").text()
+                filename = self.ui.file_selector.text()
                 p = Path(filename)
                 hidename = str(p.with_stem(p.stem + "_hidden"))
 
@@ -142,7 +134,7 @@ class MainWindow(QMainWindow):
                         "Hide failed: could not write output file", 2000
                     )
             else:
-                filename = self.findChild(QLineEdit, "file_selector").text()
+                filename = self.ui.file_selector.text()
 
                 try:
                     hide_text = self.controller.reveal(source=filename)[1]
@@ -150,7 +142,7 @@ class MainWindow(QMainWindow):
                     result = extract_payload(
                         hide_text, self.ui.secret_input.text(), plain_text=plain_text
                     )
-                    self.findChild(QPlainTextEdit, "text_input").setPlainText(result)
+                    self.ui.text_input.setPlainText(result)
 
                     status = (
                         "Text revealed successfully"
@@ -192,7 +184,7 @@ class MainWindow(QMainWindow):
             selected_files = image_input.selectedFiles()
             if selected_files:
                 file_path = selected_files[0]
-                self.findChild(QLineEdit, "file_selector").setText(f"{file_path}")
+                self.ui.file_selector.setText(file_path)
                 return file_path
             else:
                 return None
