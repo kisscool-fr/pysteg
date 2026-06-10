@@ -5,10 +5,10 @@ from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QLabel
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtWidgets import QPlainTextEdit
 from PyQt6.QtWidgets import QPushButton
 
-from app.aes256 import Crypto
 from app.constants import APP_NAME
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
@@ -18,6 +18,8 @@ from app.gui.models.mode import WindowModel
 from app.gui.ui.components.push_button import PushButton
 from app.gui.ui.main_window_ui import MainWindowUI
 from app.gui.validators.input import InputValidator
+from app.payload import extract_payload
+from app.payload import prepare_payload
 
 gettext.bindtextdomain(APP_NAME, "locales")
 gettext.textdomain(APP_NAME)
@@ -29,6 +31,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.model = WindowModel()
+        self.mode = Mode.ENCRYPT
         self.controller = ActionController(self.model)
         self.ui = MainWindowUI()
 
@@ -43,6 +46,23 @@ class MainWindow(QMainWindow):
         self.ui.rb_decrypt.clicked.connect(self._handle_mode_change)  # pyright: ignore[reportUnknownMemberType]
         self.ui.button_file.clicked.connect(self._handle_file_selection)  # pyright: ignore[reportUnknownMemberType]
         self.ui.action_button.clicked.connect(self._handle_action)  # pyright: ignore[reportUnknownMemberType]
+        self.ui.plain_text_checkbox.toggled.connect(self._handle_plain_text_toggle)  # pyright: ignore[reportUnknownMemberType]
+
+    def _handle_plain_text_toggle(self, checked: bool):
+        if checked and self.mode == Mode.ENCRYPT:
+            message = QMessageBox(self)
+            message.setIcon(QMessageBox.Icon.NoIcon)
+            message.setWindowTitle("Plain text mode")
+            message.setText(
+                "Your text will be hidden without encryption. "
+                "Anyone who extracts the hidden data can read it in plain text. "
+                "Use a shared secret unless you accept this risk."
+            )
+            message.setStandardButtons(QMessageBox.StandardButton.Ok)
+            message.exec()
+            self.ui.secret_input.clear()
+
+        self.ui.secret_input.setEnabled(not checked)
 
     def _handle_mode_change(self):
         sender = self.sender()
@@ -80,27 +100,33 @@ class MainWindow(QMainWindow):
         self.ui.apply_mode_style(mode)
 
     def _handle_action(self):
-        secret = self.findChild(QLineEdit, "secret_input").text()
-        secret_valid, secret_status = InputValidator.validate_secret(secret)
+        plain_text = self.ui.plain_text_checkbox.isChecked()
 
-        if not secret_valid:
-            self.status_bar.showMessage(secret_status, 2000)  # type: ignore
-            return
+        if not plain_text:
+            secret_valid, secret_status = InputValidator.validate_secret(
+                self.ui.secret_input.text()
+            )
 
-        crypto = Crypto(secret)
+            if not secret_valid:
+                self.status_bar.showMessage(secret_status, 2000)  # type: ignore
+                return
 
         try:
             if self.mode == Mode.ENCRYPT:
                 text = self.findChild(QPlainTextEdit, "text_input").toPlainText()
-
-                encrypted = crypto.encrypt(text)
+                payload = prepare_payload(
+                    text, self.ui.secret_input.text(), plain_text=plain_text
+                )
 
                 filename = self.findChild(QLineEdit, "file_selector").text()
                 _, ext = os.path.splitext(filename)
                 hidename = filename.replace(ext, "_hidden" + ext)
 
                 _, status = self.controller.hide(
-                    source=filename, destination=hidename, text=encrypted
+                    source=filename,
+                    destination=hidename,
+                    text=payload,
+                    plain_text=plain_text,
                 )
 
                 self.status_bar.showMessage(status, 2000)  # type: ignore
@@ -109,16 +135,29 @@ class MainWindow(QMainWindow):
 
                 try:
                     hide_text = self.controller.reveal(source=filename)[1]
-                    decrypted = crypto.decrypt(hide_text)
-                    self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
-                    self.status_bar.showMessage("Decryption successful", 2000)  # type: ignore
+                    result = extract_payload(
+                        hide_text, self.ui.secret_input.text(), plain_text=plain_text
+                    )
+                    self.findChild(QPlainTextEdit, "text_input").setPlainText(result)
+
+                    status = (
+                        "Text revealed successfully"
+                        if plain_text
+                        else "Decryption successful"
+                    )
+                    self.status_bar.showMessage(status, 2000)  # type: ignore
                 except IndexError:
                     self.status_bar.showMessage(  # type: ignore
-                        "Decryption failed: No hidden text found", 2000
+                        "Reveal failed: No hidden text found", 2000
                     )
                 except ValueError:
-                    self.status_bar.showMessage("Decryption failed: Invalid data", 2000)  # type: ignore
+                    failure = (
+                        "Reveal failed: Invalid data"
+                        if plain_text
+                        else "Decryption failed: Invalid data"
+                    )
+                    self.status_bar.showMessage(failure, 2000)  # type: ignore
         except AttributeError:
             self.status_bar.showMessage("Please choose a working mode", 2000)  # type: ignore
         except FileNotFoundError:

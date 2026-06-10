@@ -48,7 +48,9 @@ class ActionController:
         except Exception as e:  # noqa: BLE001
             return False, str(e)
 
-    def hide(self, source: str, destination: str, text: str) -> tuple[bool, str]:
+    def hide(
+        self, source: str, destination: str, text: str, plain_text: bool
+    ) -> tuple[bool, str]:
         im = Image.open(source)
         match self.get_hidding_technique(im.format):
             case Hidding.LSB:
@@ -57,7 +59,10 @@ class ActionController:
                 exifHeader.hide(source, destination, secret_message=text)  # type: ignore
             case _:
                 return False, "Unsupported image format"
-        return True, "Encryption successful"
+        return (
+            True,
+            "Text hidden successfully" if plain_text else "Encryption successful",
+        )
 
     def reveal(self, source: str) -> tuple[bool, str]:
         im = Image.open(source)
