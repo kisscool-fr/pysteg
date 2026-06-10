@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml)
 
-A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256-GCM encryption.
+A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256-GCM encryption and Argon2id key derivation.
 
 Built as a replacement for [Steganozorus](https://thomasnerrant.com/steganozorus.htm) © 2002 – [Thomas Nerrant](https://thomasnerrant.com/).
 
@@ -15,7 +15,7 @@ If you find this project useful, consider [buying me a coffee](https://www.buyme
 ## Features
 
 - **Hide and reveal messages** in image files using LSB or EXIF steganography
-- **AES-256-GCM encryption** with PBKDF2 key derivation from a shared secret
+- **AES-256-GCM encryption** with Argon2id key derivation from a shared secret
 - **Plain text mode** to hide a message without encryption (useful for testing or low-risk payloads)
 - Desktop GUI built with PyQt6
 
