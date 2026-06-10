@@ -77,7 +77,7 @@ class TestHide:
     def test_lsb_path_calls_lsb_hide_and_save(
         self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "PNG"
+        mock_image.open.return_value.__enter__.return_value.format = "PNG"
         saved = MagicMock()
         mock_lsb.hide.return_value = saved
 
@@ -93,7 +93,7 @@ class TestHide:
     def test_exif_path_calls_exif_hide(
         self, mock_image: MagicMock, mock_exif: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "JPEG"
+        mock_image.open.return_value.__enter__.return_value.format = "JPEG"
 
         ok, msg = controller.hide("src.jpg", "dst.jpg", "secret text", plain_text=False)
 
@@ -113,7 +113,7 @@ class TestHide:
         pil_format: str,
         controller: ActionController,
     ) -> None:
-        mock_image.open.return_value.format = pil_format
+        mock_image.open.return_value.__enter__.return_value.format = pil_format
         ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
@@ -127,7 +127,7 @@ class TestHide:
         pil_format: str,
         controller: ActionController,
     ) -> None:
-        mock_image.open.return_value.format = pil_format
+        mock_image.open.return_value.__enter__.return_value.format = pil_format
         ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
@@ -135,7 +135,7 @@ class TestHide:
     def test_unsupported_format_returns_failure(
         self, mock_image: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "GIF"
+        mock_image.open.return_value.__enter__.return_value.format = "GIF"
 
         ok, msg = controller.hide("src.gif", "dst.gif", "secret text", plain_text=False)
 
@@ -154,7 +154,7 @@ class TestReveal:
     def test_lsb_path_calls_lsb_reveal(
         self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "PNG"
+        mock_image.open.return_value.__enter__.return_value.format = "PNG"
         mock_lsb.reveal.return_value = "hidden text"
 
         ok, text = controller.reveal("src.png")
@@ -168,7 +168,7 @@ class TestReveal:
     def test_exif_path_calls_exif_reveal(
         self, mock_image: MagicMock, mock_exif: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "JPEG"
+        mock_image.open.return_value.__enter__.return_value.format = "JPEG"
         mock_exif.reveal.return_value.decode.return_value = "hidden text"
 
         ok, text = controller.reveal("src.jpg")
@@ -181,7 +181,7 @@ class TestReveal:
     def test_unsupported_format_returns_failure(
         self, mock_image: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.format = "GIF"
+        mock_image.open.return_value.__enter__.return_value.format = "GIF"
 
         ok, msg = controller.reveal("src.gif")
 
