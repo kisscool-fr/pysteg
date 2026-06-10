@@ -17,7 +17,7 @@ from app.gui.validators.input import InputValidator
 from app.payload import extract_payload
 from app.payload import prepare_payload
 
-gettext.bindtextdomain(APP_NAME, "locales")
+gettext.bindtextdomain(APP_NAME, str(Path(__file__).parent.parent.parent / "locales"))
 gettext.textdomain(APP_NAME)
 _ = gettext.gettext
 
@@ -27,7 +27,6 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.model = WindowModel()
-        self.mode = Mode.ENCRYPT
         self.controller = ActionController(self.model)
         self.ui = MainWindowUI()
 
@@ -45,7 +44,7 @@ class MainWindow(QMainWindow):
         self.ui.plain_text_checkbox.toggled.connect(self._handle_plain_text_toggle)  # pyright: ignore[reportUnknownMemberType]
 
     def _handle_plain_text_toggle(self, checked: bool):
-        if checked and self.mode == Mode.ENCRYPT:
+        if checked and self.model.mode == Mode.ENCRYPT:
             message = QMessageBox(self)
             message.setIcon(QMessageBox.Icon.NoIcon)
             message.setWindowTitle("Plain text mode")
@@ -70,7 +69,6 @@ class MainWindow(QMainWindow):
                 self._apply_mode(Mode.DECRYPT)
 
     def _apply_mode(self, mode: Mode, *, notify: bool = True):
-        self.mode = mode
         self.model.mode = mode
 
         if mode == Mode.ENCRYPT:
@@ -107,7 +105,7 @@ class MainWindow(QMainWindow):
                 return
 
         try:
-            if self.mode == Mode.ENCRYPT:
+            if self.model.mode == Mode.ENCRYPT:
                 text = self.ui.text_input.toPlainText()
                 payload = prepare_payload(
                     text, self.ui.secret_input.text(), plain_text=plain_text
@@ -178,7 +176,6 @@ class MainWindow(QMainWindow):
                 "TIFF Files (*.tiff *.tif)",
             ]
         )
-        # image_input.setViewMode(QFileDialog.ViewMode.List)
         image_input.setWindowTitle("Select an image file")
         if image_input.exec():
             selected_files = image_input.selectedFiles()
@@ -186,5 +183,3 @@ class MainWindow(QMainWindow):
                 file_path = selected_files[0]
                 self.ui.file_selector.setText(file_path)
                 return file_path
-            else:
-                return None

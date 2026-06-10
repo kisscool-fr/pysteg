@@ -1,7 +1,6 @@
 import base64
 from os import urandom
 
-from cryptography.exceptions import InvalidKey
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -31,20 +30,6 @@ class Crypto:
             backend=default_backend(),
         )
         return kdf.derive(password)
-
-    def verify_key(self, password: bytes, key: bytes, iterations: int = 100000) -> bool:
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=len(key),
-            salt=self._salt,
-            iterations=iterations,
-            backend=default_backend(),
-        )
-        try:
-            kdf.verify(password, key)
-            return True
-        except InvalidKey:
-            return False
 
     def encrypt(self, value: str) -> str:
         nonce = urandom(NONCE_SIZE)

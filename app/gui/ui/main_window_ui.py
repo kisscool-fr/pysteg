@@ -24,7 +24,7 @@ from app.gui.ui.components.text_line import TextLine
 class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
-        window.setWindowIcon(QIcon(f"{ASSETS_DIRECTORY}/icons/icon.png"))
+        window.setWindowIcon(QIcon(str(ASSETS_DIRECTORY / "icons" / "icon.png")))
         window.setFixedSize(QSize(318, 507))
 
         self.central_widget = QWidget()

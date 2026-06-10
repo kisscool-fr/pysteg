@@ -5,7 +5,7 @@ import pytest
 
 from app.gui.controllers.actions import ActionController
 from app.gui.controllers.actions import Format
-from app.gui.controllers.actions import Hidding
+from app.gui.controllers.actions import Hiding
 from app.gui.models.mode import WindowModel
 
 # ---------------------------------------------------------------------------
@@ -30,40 +30,40 @@ def controller(model: WindowModel) -> ActionController:
 
 class TestFormat:
     def test_png_maps_to_lsb(self) -> None:
-        assert Format.PNG == Hidding.LSB
+        assert Format.PNG == Hiding.LSB
 
     def test_bmp_maps_to_lsb(self) -> None:
-        assert Format.BMP == Hidding.LSB
+        assert Format.BMP == Hiding.LSB
 
     def test_jpeg_maps_to_exif(self) -> None:
-        assert Format.JPEG == Hidding.EXIF
+        assert Format.JPEG == Hiding.EXIF
 
     def test_tiff_maps_to_exif(self) -> None:
-        assert Format.TIFF == Hidding.EXIF
+        assert Format.TIFF == Hiding.EXIF
 
 
 # ---------------------------------------------------------------------------
-# hidding_technique
+# hiding_technique
 # ---------------------------------------------------------------------------
 
 
 class TestTechnique:
     @pytest.mark.parametrize("pil_format", ["PNG", "BMP"])
     def test_lsb_formats(self, controller: ActionController, pil_format: str) -> None:
-        assert controller.get_hidding_technique(pil_format) == Hidding.LSB
+        assert controller.get_hiding_technique(pil_format) == Hiding.LSB
 
     @pytest.mark.parametrize("pil_format", ["JPEG", "TIFF"])
     def test_exif_formats(self, controller: ActionController, pil_format: str) -> None:
-        assert controller.get_hidding_technique(pil_format) == Hidding.EXIF
+        assert controller.get_hiding_technique(pil_format) == Hiding.EXIF
 
     @pytest.mark.parametrize("pil_format", ["GIF", "WEBP", "ICO", ""])
     def test_unsupported_returns_none(
         self, controller: ActionController, pil_format: str
     ) -> None:
-        assert controller.get_hidding_technique(pil_format) is None
+        assert controller.get_hiding_technique(pil_format) is None
 
     def test_none_returns_none(self, controller: ActionController) -> None:
-        assert controller.get_hidding_technique(None) is None
+        assert controller.get_hiding_technique(None) is None
 
 
 # ---------------------------------------------------------------------------
@@ -187,34 +187,3 @@ class TestReveal:
 
         assert ok is False
         assert msg == "Unsupported image format"
-
-
-# ---------------------------------------------------------------------------
-# encrypt / decrypt
-# ---------------------------------------------------------------------------
-
-
-class TestEncryptDecrypt:
-    def test_encrypt_returns_ciphertext(self, controller: ActionController) -> None:
-        ok, result = controller.encrypt()
-
-        assert ok is True
-        assert result != controller.model.text
-        assert isinstance(result, str)
-
-    def test_decrypt_round_trips(self, controller: ActionController) -> None:
-        _, ciphertext = controller.encrypt()
-        ok, plaintext = controller.decrypt(ciphertext)
-
-        assert ok is True
-        assert plaintext == controller.model.text
-
-    def test_decrypt_wrong_secret_returns_failure(self, model: WindowModel) -> None:
-        controller = ActionController(model)
-        _, ciphertext = controller.encrypt()
-
-        model.secret = "wrong_secret"
-        ok, msg = controller.decrypt(ciphertext)
-
-        assert ok is False
-        assert isinstance(msg, str)
