@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml)
 
-A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256 encryption.
+A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256-GCM encryption.
 
 Built as a replacement for [Steganozorus](https://thomasnerrant.com/steganozorus.htm) © 2002 – [Thomas Nerrant](https://thomasnerrant.com/).
 
@@ -14,9 +14,19 @@ If you find this project useful, consider [buying me a coffee](https://www.buyme
 
 ## Features
 
-- **Hide and reveal messages** in PNG images using LSB steganography
-- **AES-256 encryption** for the hidden payload
+- **Hide and reveal messages** in image files using LSB or EXIF steganography
+- **AES-256-GCM encryption** with PBKDF2 key derivation from a shared secret
+- **Plain text mode** to hide a message without encryption (useful for testing or low-risk payloads)
 - Desktop GUI built with PyQt6
+
+### Supported image formats
+
+| Format | Technique |
+|--------|-----------|
+| PNG, BMP | LSB (least significant bit) |
+| JPEG, TIFF | EXIF header |
+
+When hiding text, the output file is saved next to the source image with a `_hidden` suffix (for example, `photo.png` → `photo_hidden.png`).
 
 ## Requirements
 
@@ -26,7 +36,10 @@ If you find this project useful, consider [buying me a coffee](https://www.buyme
 
 ## Installation
 
+First-time setup (creates a virtual environment with the Python version from `.python-version`):
+
 ```bash
+just init
 just install
 ```
 
@@ -45,8 +58,26 @@ just run
 Or:
 
 ```bash
-uv run pysteg
+uv run -m app
 ```
+
+1. Choose **Hide** or **Reveal** mode.
+2. Enter the text to hide, or leave the field empty in reveal mode.
+3. Enter a shared secret (at least 8 characters), or enable plain text mode to skip encryption.
+4. Select a cover image and run the action.
+
+## Development
+
+Common tasks via [just](https://github.com/casey/just):
+
+```bash
+just test      # run pytest
+just format    # lint and format with ruff
+just typing    # type-check with pyright
+just ci        # full local CI pipeline
+```
+
+List all recipes with `just --list`.
 
 ## Screenshot
 
@@ -57,7 +88,7 @@ uv run pysteg
 - [ ] Choose output file name
 - [ ] Add support for more encryption algorithms
 - [ ] Add support for keyfiles
-- [ ] Add support for more media (images, audio, video, drag & drop)
+- [ ] Audio and video support, drag & drop
 - [ ] Deniability support
 - [ ] More languages
 - [ ] Binary release
