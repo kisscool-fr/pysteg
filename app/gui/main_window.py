@@ -1,4 +1,5 @@
 import gettext
+import os
 
 from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QLabel
@@ -6,8 +7,6 @@ from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QPlainTextEdit
 from PyQt6.QtWidgets import QPushButton
-from stegano import lsb  # type: ignore
-from stegano.lsb import generators  # type: ignore
 
 from app.aes256 import Crypto
 from app.constants import APP_NAME
@@ -89,18 +88,20 @@ class MainWindow(QMainWindow):
 
                 encrypted = crypto.encrypt(text)
 
-                file = self.findChild(QLineEdit, "file_selector").text()
-                hide = file.replace(".png", "_hidden.png")
+                filename = self.findChild(QLineEdit, "file_selector").text()
+                _, ext = os.path.splitext(filename)
+                hidename = filename.replace(ext, "_hidden" + ext)
 
-                secret = lsb.hide(file, encrypted, generators.eratosthenes())
-                secret.save(hide)
+                _, status = self.controller.hide(
+                    source=filename, destination=hidename, text=encrypted
+                )
 
-                self.status_bar.showMessage("Encryption successful", 2000)  # type: ignore
+                self.status_bar.showMessage(status, 2000)  # type: ignore
             else:
-                file = self.findChild(QLineEdit, "file_selector").text()
+                filename = self.findChild(QLineEdit, "file_selector").text()
 
                 try:
-                    hide_text = lsb.reveal(file, generators.eratosthenes())
+                    hide_text = self.controller.reveal(source=filename)[1]
                     decrypted = crypto.decrypt(hide_text)
                     self.findChild(QPlainTextEdit, "text_input").setPlainText(decrypted)
 
@@ -119,7 +120,15 @@ class MainWindow(QMainWindow):
     def _handle_file_selection(self):
         image_input = QFileDialog()
         image_input.setFileMode(QFileDialog.FileMode.ExistingFile)
-        image_input.setNameFilter("Images (*.png)")
+        image_input.setNameFilters(  # type: ignore
+            [
+                "All Images (*.png *.jpg *.jpeg *.bmp)",
+                "PNG Files (*.png)",
+                "JPEG Files (*.jpg *.jpeg)",
+                "BMP Files (*.bmp)",
+                "TIFF Files (*.tiff *.tif)",
+            ]
+        )
         # image_input.setViewMode(QFileDialog.ViewMode.List)
         image_input.setWindowTitle("Select an image file")
         if image_input.exec():

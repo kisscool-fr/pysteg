@@ -93,7 +93,7 @@ class MainWindowUI:
         self.layout.addWidget(secret_input)
 
     def _create_file_section(self):
-        image_label = TextLabel("Image file (.png only)", "image_label")
+        image_label = TextLabel("Cover image", "image_label")
         self.layout.addWidget(image_label)
 
         self.button_file = PushButton("Choose file", "select_file_button")
