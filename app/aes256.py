@@ -2,13 +2,17 @@ import base64
 from os import urandom
 
 from cryptography.exceptions import InvalidTag
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
 
 SALT_SIZE = 16
 NONCE_SIZE = 12
+
+# memory_cost: 64 MiB, time_cost: 3 passes, lanes: 1 thread.
+_ARGON2_MEMORY_COST = 65536
+_ARGON2_TIME_COST = 3
+_ARGON2_LANES = 1
+_ARGON2_KEY_LENGTH = 32
 
 
 class Crypto:
@@ -19,15 +23,13 @@ class Crypto:
     def get_salt(self) -> bytes:
         return urandom(SALT_SIZE)
 
-    def derive_key(
-        self, password: bytes, iterations: int = 100000, salt: bytes | None = None
-    ) -> bytes:
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
+    def derive_key(self, password: bytes, salt: bytes | None = None) -> bytes:
+        kdf = Argon2id(
             salt=salt if salt is not None else self._salt,
-            iterations=iterations,
-            backend=default_backend(),
+            length=_ARGON2_KEY_LENGTH,
+            iterations=_ARGON2_TIME_COST,
+            lanes=_ARGON2_LANES,
+            memory_cost=_ARGON2_MEMORY_COST,
         )
         return kdf.derive(password)
 

@@ -2,7 +2,7 @@ import pytest
 
 from app.aes256 import Crypto
 
-AES_IV_SIZE = 16  # AES-128 requires a 16-byte IV
+SALT_SIZE = 16
 AES_KEY_SIZE = 32  # AES-256 requires a 32-byte key
 
 
@@ -14,7 +14,7 @@ def crypto() -> Crypto:
 def test_get_salt(crypto: Crypto):
     secret_key = crypto.get_salt()
     assert isinstance(secret_key, bytes)
-    assert len(secret_key) == AES_IV_SIZE
+    assert len(secret_key) == SALT_SIZE
 
 
 def test_derive_key(crypto: Crypto):
