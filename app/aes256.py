@@ -14,9 +14,8 @@ NONCE_SIZE = 12
 
 class Crypto:
     def __init__(self, shared_secret: str):
-        self.salt: bytes = self.get_salt()
         self._pwd: bytes = shared_secret.encode("utf-8")
-        self.derived_key: bytes = self.derive_key(self._pwd)
+        self._salt: bytes = self.get_salt()
 
     def get_salt(self) -> bytes:
         return urandom(SALT_SIZE)
@@ -27,7 +26,7 @@ class Crypto:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=salt if salt is not None else self.salt,
+            salt=salt if salt is not None else self._salt,
             iterations=iterations,
             backend=default_backend(),
         )
@@ -37,7 +36,7 @@ class Crypto:
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=len(key),
-            salt=self.salt,
+            salt=self._salt,
             iterations=iterations,
             backend=default_backend(),
         )
@@ -50,11 +49,12 @@ class Crypto:
     def encrypt(self, value: str) -> str:
         nonce = urandom(NONCE_SIZE)
 
-        aesgcm = AESGCM(self.derived_key)
+        derived_key = self.derive_key(self._pwd)
+        aesgcm = AESGCM(derived_key)
 
         ciphertext = aesgcm.encrypt(nonce, value.encode("utf-8"), None)
 
-        return base64.b64encode(self.salt + nonce + ciphertext).decode("utf-8")
+        return base64.b64encode(self._salt + nonce + ciphertext).decode("utf-8")
 
     def decrypt(self, value: str) -> str:
         try:
