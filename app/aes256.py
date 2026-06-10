@@ -17,13 +17,13 @@ _ARGON2_KEY_LENGTH = 32
 
 class Crypto:
     def __init__(self, shared_secret: str):
-        self._pwd: bytes = shared_secret.encode("utf-8")
-        self._salt: bytes = self.get_salt()
+        self._secret: bytes = shared_secret.encode("utf-8")
+        self._salt: bytes = self.get_random_salt()
 
-    def get_salt(self) -> bytes:
+    def get_random_salt(self) -> bytes:
         return urandom(SALT_SIZE)
 
-    def derive_key(self, password: bytes, salt: bytes | None = None) -> bytes:
+    def derive_key(self, secret: bytes, *, salt: bytes | None = None) -> bytes:
         kdf = Argon2id(
             salt=salt if salt is not None else self._salt,
             length=_ARGON2_KEY_LENGTH,
@@ -31,12 +31,12 @@ class Crypto:
             lanes=_ARGON2_LANES,
             memory_cost=_ARGON2_MEMORY_COST,
         )
-        return kdf.derive(password)
+        return kdf.derive(secret)
 
     def encrypt(self, value: str) -> str:
         nonce = urandom(NONCE_SIZE)
 
-        derived_key = self.derive_key(self._pwd)
+        derived_key = self.derive_key(self._secret)
         aesgcm = AESGCM(derived_key)
 
         ciphertext = aesgcm.encrypt(nonce, value.encode("utf-8"), None)
@@ -51,7 +51,7 @@ class Crypto:
             nonce = encrypted_data[SALT_SIZE : SALT_SIZE + NONCE_SIZE]
             ciphertext = encrypted_data[SALT_SIZE + NONCE_SIZE :]
 
-            derived_key = self.derive_key(self._pwd, salt=salt)
+            derived_key = self.derive_key(self._secret, salt=salt)
             aesgcm = AESGCM(derived_key)
 
             plaintext = aesgcm.decrypt(nonce, ciphertext, None)

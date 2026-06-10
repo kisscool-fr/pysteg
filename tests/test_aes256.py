@@ -12,7 +12,7 @@ def crypto() -> Crypto:
 
 
 def test_get_salt(crypto: Crypto):
-    secret_key = crypto.get_salt()
+    secret_key = crypto.get_random_salt()
     assert isinstance(secret_key, bytes)
     assert len(secret_key) == SALT_SIZE
 
