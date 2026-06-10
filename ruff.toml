@@ -37,12 +37,3 @@ ignore = [
 
 [lint.isort]
 force-single-line = true
-
-[lint.flake8-bugbear]
-extend-immutable-calls = [ # ignore B008 only for FastAPI dependency injection pattern
-    "fastapi.Depends",
-    "fastapi.Query",
-    "fastapi.Path",
-    "fastapi.Security",
-    "fastapi.security.HTTPBearer",
-]

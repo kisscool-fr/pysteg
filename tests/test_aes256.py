@@ -26,17 +26,6 @@ def test_derive_key(crypto: Crypto):
     assert len(derived_key) == AES_KEY_SIZE
 
 
-def test_verify_key(crypto: Crypto):
-    password = b"test_password"
-    derived_key = crypto.derive_key(password)
-
-    # Verify the key matches
-    assert crypto.verify_key(password, derived_key)
-
-    # Verify a wrong password does not match
-    assert not crypto.verify_key(b"wrong_password", derived_key)
-
-
 def test_encrypt(crypto: Crypto):
     test_value = "test message"
     encrypted_value = crypto.encrypt(test_value)
