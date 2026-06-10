@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pysteg"
-version = "0.2.1"
+version = "0.3.0"
 description = "A basic GUI for steganography"
 authors = [
     { name = "KisSCoOl", email = "kisscool@kisscool.net" },
