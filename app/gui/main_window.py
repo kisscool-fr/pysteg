@@ -96,7 +96,10 @@ class MainWindow(QMainWindow):
                 f"{ICON_UNLOCK} Reveal text"
             )
 
+        self.findChild(QPlainTextEdit, "text_input").setPlainText("")
         self.findChild(QLineEdit, "file_selector").setText("")
+        self.ui.secret_input.clear()
+        self.ui.plain_text_checkbox.setChecked(False)
         self.ui.apply_mode_style(mode)
 
     def _handle_action(self):
