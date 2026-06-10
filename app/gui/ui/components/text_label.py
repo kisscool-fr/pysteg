@@ -9,7 +9,3 @@ class TextLabel(QLabel):
 
         self.setObjectName(object_name)
         self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-
-        font = self.font()
-        font.setPointSize(10)
-        self.setFont(font)
