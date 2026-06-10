@@ -1,5 +1,5 @@
 import gettext
-import os
+from pathlib import Path
 
 from PyQt6.QtWidgets import QFileDialog
 from PyQt6.QtWidgets import QLabel
@@ -122,17 +122,25 @@ class MainWindow(QMainWindow):
                 )
 
                 filename = self.findChild(QLineEdit, "file_selector").text()
-                _, ext = os.path.splitext(filename)
-                hidename = filename.replace(ext, "_hidden" + ext)
+                p = Path(filename)
+                hidename = str(p.with_stem(p.stem + "_hidden"))
 
-                _, status = self.controller.hide(
-                    source=filename,
-                    destination=hidename,
-                    text=payload,
-                    plain_text=plain_text,
-                )
-
-                self.status_bar.showMessage(status, 2000)  # type: ignore
+                try:
+                    _, status = self.controller.hide(
+                        source=filename,
+                        destination=hidename,
+                        text=payload,
+                        plain_text=plain_text,
+                    )
+                    self.status_bar.showMessage(status, 2000)  # type: ignore
+                except (IndexError, OverflowError, ValueError):
+                    self.status_bar.showMessage(  # type: ignore
+                        "Hide failed: message too large for this image", 2000
+                    )
+                except OSError:
+                    self.status_bar.showMessage(  # type: ignore
+                        "Hide failed: could not write output file", 2000
+                    )
             else:
                 filename = self.findChild(QLineEdit, "file_selector").text()
 
