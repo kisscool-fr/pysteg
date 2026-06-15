@@ -26,7 +26,7 @@ If you find this project useful, consider [buying me a coffee](https://www.buyme
 | PNG, BMP | LSB (least significant bit) |
 | JPEG, TIFF | EXIF header |
 
-When hiding text, the output file is saved next to the source image with a `_hidden` suffix (for example, `photo.png` → `photo_hidden.png`).
+When hiding text, the output file path is pre-filled with a `_hidden` suffix suggestion (for example, `photo.png` → `photo_hidden.png`) and can be changed to any name before running the action.
 
 ## Requirements
 
@@ -64,7 +64,8 @@ uv run -m app
 1. Choose **Hide** or **Reveal** mode.
 2. Enter the text to hide, or leave the field empty in reveal mode.
 3. Enter a shared secret (at least 8 characters), or enable plain text mode to skip encryption.
-4. Select a cover image and run the action.
+4. Select a cover image. The output file path is pre-filled automatically; edit it if you want a different name or location.
+5. Run the action.
 
 ## Development
 
@@ -85,7 +86,7 @@ List all recipes with `just --list`.
 
 ## Roadmap
 
-- [ ] Choose output file name
+- [x] Choose output file name
 - [ ] Add support for more encryption algorithms
 - [ ] Add support for keyfiles
 - [ ] Audio and video support, drag & drop
