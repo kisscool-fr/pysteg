@@ -1,5 +1,4 @@
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QCheckBox
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtWidgets import QHBoxLayout
@@ -9,7 +8,6 @@ from PyQt6.QtWidgets import QWidget
 
 from app.constants import APP_NAME
 from app.constants import APP_VERSION
-from app.constants import ASSETS_DIRECTORY
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
 from app.gui.models.mode import Mode
@@ -24,7 +22,6 @@ from app.gui.ui.components.text_line import TextLine
 class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
-        window.setWindowIcon(QIcon(str(ASSETS_DIRECTORY / "icons" / "icon.png")))
         window.setFixedSize(QSize(318, 557))
 
         self.central_widget = QWidget()
@@ -47,7 +44,7 @@ class MainWindowUI:
 
         window.status_bar = window.statusBar()  # pyright: ignore[reportAttributeAccessIssue]
 
-        self.apply_mode_style(Mode.ENCRYPT)
+        self.apply_mode_style(Mode.HIDE)
 
     def center_window(self, window: QMainWindow):
         screen = window.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
@@ -59,8 +56,8 @@ class MainWindowUI:
     def _create_mode_buttons(self):
         rb_layout = QHBoxLayout()
 
-        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.ENCRYPT)
-        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.DECRYPT)
+        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.HIDE)
+        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.REVEAL)
         rb_layout.addWidget(self.rb_encrypt)
         rb_layout.addWidget(self.rb_decrypt)
         self.layout.addLayout(rb_layout)
@@ -79,7 +76,7 @@ class MainWindowUI:
         self.layout.addWidget(separator)
 
     def apply_mode_style(self, mode: Mode):
-        if mode == Mode.ENCRYPT:
+        if mode == Mode.HIDE:
             palette = styles.HIDE_ACCENT
             self.rb_encrypt.setStyleSheet(styles.mode_button_active(palette))
             self.rb_decrypt.setStyleSheet(styles.mode_button_inactive())
