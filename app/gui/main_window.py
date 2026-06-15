@@ -88,8 +88,14 @@ class MainWindow(QMainWindow):
 
         self.ui.text_input.setPlainText("")
         self.ui.file_selector.setText("")
+        self.ui.output_file_input.clear()
         self.ui.secret_input.clear()
         self.ui.plain_text_checkbox.setChecked(False)
+
+        encrypt_mode = mode == Mode.HIDE
+        self.ui.output_file_label.setVisible(encrypt_mode)
+        self.ui.output_file_input.setVisible(encrypt_mode)
+
         self.ui.apply_mode_style(mode)
 
     def _handle_action(self):
@@ -112,8 +118,13 @@ class MainWindow(QMainWindow):
                 )
 
                 filename = self.ui.file_selector.text()
-                p = Path(filename)
-                hidename = str(p.with_stem(p.stem + "_hidden"))
+                hidename = self.ui.output_file_input.text().strip()
+                output_valid, output_status = InputValidator.validate_output_file(
+                    filename, hidename
+                )
+                if not output_valid:
+                    self.status_bar.showMessage(output_status, 2000)  # type: ignore
+                    return
 
                 try:
                     _, status = self.controller.hide(
@@ -182,4 +193,6 @@ class MainWindow(QMainWindow):
             if selected_files:
                 file_path = selected_files[0]
                 self.ui.file_selector.setText(file_path)
+                p = Path(file_path)
+                self.ui.output_file_input.setText(str(p.with_stem(p.stem + "_hidden")))
                 return file_path
