@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self.ui.secret_input.clear()
         self.ui.plain_text_checkbox.setChecked(False)
 
-        encrypt_mode = mode == Mode.ENCRYPT
+        encrypt_mode = mode == Mode.HIDE
         self.ui.output_file_label.setVisible(encrypt_mode)
         self.ui.output_file_input.setVisible(encrypt_mode)
 
