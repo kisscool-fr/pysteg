@@ -25,7 +25,7 @@ class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
         window.setWindowIcon(QIcon(str(ASSETS_DIRECTORY / "icons" / "icon.png")))
-        window.setFixedSize(QSize(318, 507))
+        window.setFixedSize(QSize(318, 557))
 
         self.central_widget = QWidget()
         self.layout = QVBoxLayout()
@@ -121,6 +121,13 @@ class MainWindowUI:
 
         self.file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
         self.layout.addWidget(self.file_selector)
+
+        self.output_file_label = TextLabel("Output file", "output_file_label")
+        self.layout.addWidget(self.output_file_label)
+
+        self.output_file_input = TextLine("", "output_file_input")
+        self.output_file_input.setPlaceholderText("Output file path")
+        self.layout.addWidget(self.output_file_input)
 
     def _create_action_button(self):
         self.action_button = PushButton(f"{ICON_LOCK} Hide Text", "action_button")
