@@ -44,7 +44,7 @@ class MainWindowUI:
 
         window.status_bar = window.statusBar()  # pyright: ignore[reportAttributeAccessIssue]
 
-        self.apply_mode_style(Mode.ENCRYPT)
+        self.apply_mode_style(Mode.HIDE)
 
     def center_window(self, window: QMainWindow):
         screen = window.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
@@ -56,8 +56,8 @@ class MainWindowUI:
     def _create_mode_buttons(self):
         rb_layout = QHBoxLayout()
 
-        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.ENCRYPT)
-        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.DECRYPT)
+        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.HIDE)
+        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.REVEAL)
         rb_layout.addWidget(self.rb_encrypt)
         rb_layout.addWidget(self.rb_decrypt)
         self.layout.addLayout(rb_layout)
@@ -76,7 +76,7 @@ class MainWindowUI:
         self.layout.addWidget(separator)
 
     def apply_mode_style(self, mode: Mode):
-        if mode == Mode.ENCRYPT:
+        if mode == Mode.HIDE:
             palette = styles.HIDE_ACCENT
             self.rb_encrypt.setStyleSheet(styles.mode_button_active(palette))
             self.rb_decrypt.setStyleSheet(styles.mode_button_inactive())

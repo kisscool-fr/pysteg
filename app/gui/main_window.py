@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.ui.center_window(self)
 
         self._connect_signals()
-        self._apply_mode(Mode.ENCRYPT, notify=False)
+        self._apply_mode(Mode.HIDE, notify=False)
 
     def _connect_signals(self):
         self.ui.rb_encrypt.clicked.connect(self._handle_mode_change)  # pyright: ignore[reportUnknownMemberType]
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
         self.ui.plain_text_checkbox.toggled.connect(self._handle_plain_text_toggle)  # pyright: ignore[reportUnknownMemberType]
 
     def _handle_plain_text_toggle(self, checked: bool):
-        if checked and self.model.mode == Mode.ENCRYPT:
+        if checked and self.model.mode == Mode.HIDE:
             message = QMessageBox(self)
             message.setIcon(QMessageBox.Icon.NoIcon)
             message.setWindowTitle("Plain text mode")
@@ -63,15 +63,15 @@ class MainWindow(QMainWindow):
         sender = self.sender()
 
         if isinstance(sender, PushButton):
-            if sender.objectName() == Mode.ENCRYPT:
-                self._apply_mode(Mode.ENCRYPT)
-            elif sender.objectName() == Mode.DECRYPT:
-                self._apply_mode(Mode.DECRYPT)
+            if sender.objectName() == Mode.HIDE:
+                self._apply_mode(Mode.HIDE)
+            elif sender.objectName() == Mode.REVEAL:
+                self._apply_mode(Mode.REVEAL)
 
     def _apply_mode(self, mode: Mode, *, notify: bool = True):
         self.model.mode = mode
 
-        if mode == Mode.ENCRYPT:
+        if mode == Mode.HIDE:
             if notify:
                 self.status_bar.showMessage("Hide mode selected", 2000)  # type: ignore
 
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
                 return
 
         try:
-            if self.model.mode == Mode.ENCRYPT:
+            if self.model.mode == Mode.HIDE:
                 text = self.ui.text_input.toPlainText()
                 payload = prepare_payload(
                     text, self.ui.secret_input.text(), plain_text=plain_text
