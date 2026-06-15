@@ -1,5 +1,4 @@
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QCheckBox
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtWidgets import QHBoxLayout
@@ -9,7 +8,6 @@ from PyQt6.QtWidgets import QWidget
 
 from app.constants import APP_NAME
 from app.constants import APP_VERSION
-from app.constants import ASSETS_DIRECTORY
 from app.constants import ICON_LOCK
 from app.constants import ICON_UNLOCK
 from app.gui.models.mode import Mode
@@ -24,7 +22,6 @@ from app.gui.ui.components.text_line import TextLine
 class MainWindowUI:
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
-        window.setWindowIcon(QIcon(str(ASSETS_DIRECTORY / "icons" / "icon.png")))
         window.setFixedSize(QSize(318, 507))
 
         self.central_widget = QWidget()
