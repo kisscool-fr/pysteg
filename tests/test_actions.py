@@ -77,13 +77,16 @@ class TestHide:
     def test_lsb_path_calls_lsb_hide_and_save(
         self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "PNG"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "PNG"
+        im.size = (10, 10)
         saved = MagicMock()
         mock_lsb.hide.return_value = saved
 
         ok, msg = controller.hide("src.png", "dst.png", "secret text", plain_text=False)
 
         mock_lsb.hide.assert_called_once()
+        assert mock_lsb.hide.call_args.kwargs["auto_convert_rgb"] is True
         saved.save.assert_called_once_with("dst.png")
         assert ok is True
         assert msg == "Encryption successful"
@@ -93,7 +96,9 @@ class TestHide:
     def test_exif_path_calls_exif_hide(
         self, mock_image: MagicMock, mock_exif: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "JPEG"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "JPEG"
+        im.size = (10, 10)
 
         ok, msg = controller.hide("src.jpg", "dst.jpg", "secret text", plain_text=False)
 
@@ -113,7 +118,9 @@ class TestHide:
         pil_format: str,
         controller: ActionController,
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = pil_format
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = pil_format
+        im.size = (10, 10)
         ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
@@ -127,7 +134,9 @@ class TestHide:
         pil_format: str,
         controller: ActionController,
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = pil_format
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = pil_format
+        im.size = (10, 10)
         ok, _ = controller.hide("src", "dst", "text", plain_text=False)
         assert ok is True
 
@@ -135,12 +144,29 @@ class TestHide:
     def test_unsupported_format_returns_failure(
         self, mock_image: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "GIF"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "GIF"
+        im.size = (10, 10)
 
         ok, msg = controller.hide("src.gif", "dst.gif", "secret text", plain_text=False)
 
         assert ok is False
         assert msg == "Unsupported image format"
+
+    @patch("app.gui.controllers.actions.lsb")
+    @patch("app.gui.controllers.actions.Image")
+    def test_oversized_image_returns_failure(
+        self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
+    ) -> None:
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "PNG"
+        im.size = (100_000, 100_000)
+
+        ok, msg = controller.hide("src.png", "dst.png", "secret text", plain_text=False)
+
+        assert ok is False
+        assert msg == "Image too large to process"
+        mock_lsb.hide.assert_not_called()
 
 
 # ---------------------------------------------------------------------------
@@ -154,7 +180,9 @@ class TestReveal:
     def test_lsb_path_calls_lsb_reveal(
         self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "PNG"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "PNG"
+        im.size = (10, 10)
         mock_lsb.reveal.return_value = "hidden text"
 
         ok, text = controller.reveal("src.png")
@@ -168,7 +196,9 @@ class TestReveal:
     def test_exif_path_calls_exif_reveal(
         self, mock_image: MagicMock, mock_exif: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "JPEG"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "JPEG"
+        im.size = (10, 10)
         mock_exif.reveal.return_value.decode.return_value = "hidden text"
 
         ok, text = controller.reveal("src.jpg")
@@ -181,9 +211,26 @@ class TestReveal:
     def test_unsupported_format_returns_failure(
         self, mock_image: MagicMock, controller: ActionController
     ) -> None:
-        mock_image.open.return_value.__enter__.return_value.format = "GIF"
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "GIF"
+        im.size = (10, 10)
 
         ok, msg = controller.reveal("src.gif")
 
         assert ok is False
         assert msg == "Unsupported image format"
+
+    @patch("app.gui.controllers.actions.lsb")
+    @patch("app.gui.controllers.actions.Image")
+    def test_oversized_image_returns_failure(
+        self, mock_image: MagicMock, mock_lsb: MagicMock, controller: ActionController
+    ) -> None:
+        im = mock_image.open.return_value.__enter__.return_value
+        im.format = "PNG"
+        im.size = (100_000, 100_000)
+
+        ok, msg = controller.reveal("src.png")
+
+        assert ok is False
+        assert msg == "Image too large to process"
+        mock_lsb.reveal.assert_not_called()
