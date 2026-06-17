@@ -9,7 +9,8 @@ description = "A basic GUI for steganography"
 authors = [
     { name = "KisSCoOl", email = "kisscool@kisscool.net" },
 ]
-license = "MIT"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

@@ -97,7 +97,7 @@ List all recipes with `just --list`.
 
 ## License
 
-[MIT](LICENSE)
+[GPL-3.0-or-later](LICENSE)
 
 ## Credits
 
