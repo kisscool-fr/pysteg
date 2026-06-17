@@ -1,0 +1,97 @@
+name: Bug report
+description: Report something that is not working as expected
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please include enough detail for us to reproduce the issue.
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: PySteg version
+      description: Which version are you running?
+      options:
+        - Latest from main
+        - v0.4.0
+        - v0.3.0
+        - v0.2.1
+        - v0.2.0
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Hide
+        - Reveal
+        - Both / not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: encryption
+    attributes:
+      label: Encryption
+      options:
+        - Encrypted (AES-256-GCM)
+        - Plain text
+        - Both / not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: format
+    attributes:
+      label: Image format
+      options:
+        - PNG
+        - BMP
+        - JPEG
+        - TIFF
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected instead.
+      placeholder: When I try to reveal a message from a JPEG, the app shows...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps are ideal. Do not include real secrets or sensitive payloads.
+      placeholder: |
+        1. Open PySteg
+        2. Select Reveal mode
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, and how you installed/ran PySteg.
+      placeholder: macOS 15, Python 3.13, `uv run -m app`
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages or screenshots
+      description: Paste any traceback or attach screenshots if helpful.
+    validations:
+      required: false
