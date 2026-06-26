@@ -7,7 +7,7 @@ name = "pysteg"
 version = "0.4.0"
 description = "A basic GUI for steganography"
 authors = [
-    { name = "KisSCoOl", email = "kisscool@kisscool.net" },
+    { name = "KisSCoOl", email = "797858+kisscool-fr@users.noreply.github.com" },
 ]
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]

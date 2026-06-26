@@ -99,6 +99,12 @@ List all recipes with `just --list`.
 
 [GPL-3.0-or-later](LICENSE)
 
+## Community
+
+- [Contributing](CONTRIBUTING.md) — development setup, code style, and pull request process
+- [Security policy](SECURITY.md) — how to report vulnerabilities privately
+- [Code of conduct](CODE_OF_CONDUCT.md)
+
 ## Credits
 
 [KisSCoOl](https://github.com/kisscool-fr/)
