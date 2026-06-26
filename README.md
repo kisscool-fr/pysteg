@@ -80,9 +80,13 @@ just ci        # full local CI pipeline
 
 List all recipes with `just --list`.
 
-## Screenshot
+## Screenshots
 
-![PySteg main window](docs/main-window.jpg)
+PySteg is a native desktop app on macOS and Windows. The main window in **Hide** mode:
+
+| macOS (v0.4) | Windows (v0.1) |
+| :---: | :---: |
+| ![PySteg main window on macOS](docs/main-window-macos.png) | ![PySteg main window on Windows](docs/main-window.jpg) |
 
 ## Roadmap
 
