@@ -14,7 +14,7 @@ license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "stegano>=2.4.1",
+    "stegano>=2.5.0",
     "pyqt6>=6.11.0",
     "cryptography>=49.0.0",
     "pillow>=12.3.0",
@@ -25,7 +25,7 @@ dev = [
     "pip-audit>=2.10.1",
     "pyright>=1.1.410",
     "pytest>=9.1.1",
-    "ruff>=0.15.18",
+    "ruff>=0.15.21",
 ]
 
 [tool.hatch.build.targets.wheel]
