@@ -91,10 +91,12 @@ PySteg is a native desktop app on macOS and Windows. The main window in **Hide**
 ## Roadmap
 
 - [x] Choose output file name
+- [ ] Add pane to choose encryption / diffusion algorithm
 - [ ] Add support for more encryption algorithms
 - [ ] Add support for keyfiles
 - [ ] Audio and video support, drag & drop
 - [ ] Deniability support
+- [ ] Self-destructing messages (one-time reveal that restores the original cover)
 - [ ] More languages
 - [ ] Binary release
 - [ ] Design improvements
