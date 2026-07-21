@@ -87,6 +87,27 @@ just ci        # full local CI pipeline
 
 List all recipes with `just --list`.
 
+## Building a binary
+
+Build a standalone executable with [PyInstaller](https://pyinstaller.org/):
+
+```bash
+just build         # build for the host OS, version from pyproject.toml
+just build 0.4.0   # override the version label
+```
+
+The output is written to `dist/`:
+
+- **Windows** — `pysteg-<version>-windows.exe` (single file)
+- **Linux** — `pysteg-<version>-linux` (single file)
+- **macOS** — `pysteg-<version>-macos.zip` (a zipped `PySteg.app` bundle)
+
+> [!NOTE]
+> PyInstaller cannot cross-compile: a build always targets the OS it runs on.
+> That is why each release binary is built on its own runner. Releases attach
+> binaries for all three platforms automatically (see
+> `.github/workflows/release.yml`).
+
 ## Screenshots
 
 PySteg is a native desktop app on macOS and Windows. The main window in **Hide** mode:
@@ -105,8 +126,16 @@ PySteg is a native desktop app on macOS and Windows. The main window in **Hide**
 - [ ] Deniability support
 - [ ] Self-destructing messages (one-time reveal that restores the original cover)
 - [ ] More languages
-- [ ] Binary release
+- [x] Binary release
+- [ ] Code signing
 - [ ] Design improvements
+
+> [!NOTE]
+> Release binaries are currently **unsigned**. Planned signing per platform:
+>
+> - **Linux** — no code signing needed; publishing `SHA256` checksums for verification is enough.
+> - **Windows** — free Authenticode signing via the [SignPath Foundation](https://signpath.org/) OSS tier (HSM-backed, integrates with GitHub Actions).
+> - **macOS** — requires an Apple Developer Program membership ($99/yr) to sign with a *Developer ID Application* certificate and notarize the `.app`. Until then, bypass Gatekeeper with right-click → **Open** (or `xattr -d com.apple.quarantine <file>`).
 
 ## License
 
