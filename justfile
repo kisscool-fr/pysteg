@@ -20,7 +20,7 @@ init:
 # Remove all packages from the venv (venv stays)
 clean:
     echo Cleaning up...
-    uv venv --clear
+    uv venv --clear --force --no-cache
 
 # Install/sync dependencies from lockfile (uv sync)
 install:
@@ -85,3 +85,7 @@ version:
 # Bump version, commit, tag, and push (bump = patch|minor|major|X.Y.Z)
 release bump="patch":
     uv run python scripts/release.py {{ bump }}
+
+# Build a standalone binary for the host OS (version defaults to pyproject)
+build version="":
+    uv run python scripts/build.py {{ version }}
