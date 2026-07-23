@@ -8,6 +8,8 @@ A simple GUI for steganography: hide and reveal secret messages in images, with 
 
 Built as a replacement for [Steganozorus](https://thomasnerrant.com/steganozorus.htm) © 2002 – [Thomas Nerrant](https://thomasnerrant.com/).
 
+> **Warning:** PySteg is still under active development. Backward compatibility for hidden text is not guaranteed before version 1.0 (messages encoded with an earlier release may not be readable after an upgrade).
+
 ## Sponsor
 
 If you find this project useful, consider [buying me a coffee](https://www.buymeacoffee.com/kisscool).
@@ -19,14 +21,19 @@ If you find this project useful, consider [buying me a coffee](https://www.buyme
 - **Plain text mode** to hide a message without encryption (useful for testing or low-risk payloads)
 - Desktop GUI built with PyQt6
 
-### Supported image formats
+### Supported media formats
 
-| Format | Technique |
-|--------|-----------|
-| PNG, BMP | LSB (least significant bit) |
-| JPEG, TIFF | EXIF header |
+PySteg uses [Stegano](https://github.com/cedricbonhomme/Stegano) for steganography.
 
-When hiding text, the output file path is pre-filled with a `_hidden` suffix suggestion (for example, `photo.png` → `photo_hidden.png`) and can be changed to any name before running the action.
+| Format | Technique | Support |
+|--------|-----------|---------|
+| PNG, BMP | LSB (least significant bit) | ✅ |
+| JPEG, TIFF | EXIF header | ✅ |
+| WAV | LSB | 🔜 |
+| PNG (grayscale) | RDH (reversible histogram shifting) | 🔜 |
+| RGB images (PNG, BMP, JPEG, …) | RED (red channel) | 🔜 |
+
+✅ supported today · 🔜 available in Stegano, planned for PySteg integration
 
 ## Requirements
 
@@ -113,4 +120,4 @@ PySteg is a native desktop app on macOS and Windows. The main window in **Hide**
 
 ## Credits
 
-[KisSCoOl](https://github.com/kisscool-fr/)
+[Sébastien B](https://github.com/kisscool-fr/)
