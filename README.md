@@ -33,7 +33,9 @@ PySteg uses [Stegano](https://github.com/cedricbonhomme/Stegano) for steganograp
 | PNG (grayscale) | RDH (reversible histogram shifting) | 🔜 |
 | RGB images (PNG, BMP, JPEG, …) | RED (red channel) | 🔜 |
 
-✅ supported today · 🔜 available in Stegano, planned for PySteg integration
+✅ supported today
+
+🔜 available in Stegano, planned for PySteg integration
 
 ## Requirements
 
