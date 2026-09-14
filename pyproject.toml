@@ -23,9 +23,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pip-audit>=2.10.1",
-    "pyright>=1.1.410",
+    "pyright>=1.1.414",
     "pytest>=9.1.1",
-    "ruff>=0.16.6",
+    "ruff>=0.16.7",
 ]
 
 [tool.hatch.build.targets.wheel]
