@@ -3,6 +3,9 @@
 .venv
 .vscode
 
+build/
+dist/
+
 .pytest_cache
 .ruff_cache
 __pycache__
@@ -10,3 +13,4 @@ __pycache__
 *.png
 *.jpg
 *.xcf
+.DS_Store
