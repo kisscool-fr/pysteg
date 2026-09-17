@@ -22,6 +22,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "bandit>=1.9.4",
     "pip-audit>=2.10.1",
     "pyright>=1.1.414",
     "pytest>=9.1.1",
@@ -30,6 +31,12 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
+
+[tool.bandit]
+targets = ["app"]
+exclude_dirs = [".venv", "tests", "scripts", "build", "dist"]
+severity = "low"
+confidence = "low"
 
 [tool.pyright]
 include = ["app"]

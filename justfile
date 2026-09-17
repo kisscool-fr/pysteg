@@ -69,10 +69,11 @@ test:
     echo Running tests...
     uv run pytest
 
-# Security: pip-audit (deps) and gitleaks (secrets)
+# Security: pip-audit (deps), bandit (SAST), and gitleaks (secrets)
 audit:
     echo Running security audit...
     uv run pip-audit . || true
+    uv run bandit -c pyproject.toml -r app/
     gitleaks dir ./ --max-decode-depth 5
 
 # CI pipeline: check lockfile, format, typecheck, test, audit
