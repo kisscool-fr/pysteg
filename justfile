@@ -55,14 +55,13 @@ check:
 # Lint and format app/ and tests/ with ruff
 format:
     echo Formatting the code...
-    uv run ruff check ./app/ --fix
-    uv run ruff check ./tests/ --fix
-    uv run ruff format ./app/ ./tests/
+    uv run ruff check ./app/ ./scripts/ ./tests/ --fix
+    uv run ruff format ./app/ ./scripts/ ./tests/
 
 # Type-check with pyright
 typing:
     echo Running type checking...
-    uv run pyright ./app/ ./tests/ --threads 4
+    uv run pyright ./app/ ./scripts/ ./tests/ --threads 4
 
 # Run pytest
 test:

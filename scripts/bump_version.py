@@ -33,7 +33,9 @@ def compute_next_version(current: str, bump: str) -> str:
 
     parts = current.split(".")
     if len(parts) != VERSION_PARTS or not all(p.isdigit() for p in parts):
-        print(f"error: current version '{current}' is not valid semver", file=sys.stderr)
+        print(
+            f"error: current version '{current}' is not valid semver", file=sys.stderr
+        )
         sys.exit(1)
 
     major, minor, patch = (int(p) for p in parts)
@@ -48,7 +50,10 @@ def compute_next_version(current: str, bump: str) -> str:
         minor = 0
         patch = 0
     else:
-        print(f"error: invalid bump '{bump}' (use patch, minor, major, or X.Y.Z)", file=sys.stderr)
+        print(
+            f"error: invalid bump '{bump}' (use patch, minor, major, or X.Y.Z)",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     return f"{major}.{minor}.{patch}"

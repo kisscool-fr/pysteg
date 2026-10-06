@@ -38,7 +38,9 @@ def main() -> None:
     run(["git", "commit", "-m", f"release: v{new_version}"])
     run(["git", "tag", "-a", f"v{new_version}", "-m", f"v{new_version}"])
 
-    print(f"Release v{new_version} ready. Run 'git push && git push --tags' to publish.")
+    print(
+        f"Release v{new_version} ready. Run 'git push && git push --tags' to publish."
+    )
 
 
 if __name__ == "__main__":
