@@ -41,5 +41,51 @@ jobs:
           draft: false
           prerelease: false
 
-      # TODO: add binary build steps here (PyInstaller / Nuitka)
-      # once the build pipeline is ready, attach artifacts to the release
+  binaries:
+    name: binaries (${{ matrix.target }})
+    needs: [release]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: linux
+            ext: ""
+          - os: windows-latest
+            target: windows
+            ext: ".exe"
+          - os: macos-latest
+            target: macos
+            ext: ".zip"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          version: "0.12.15"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build binary
+        shell: bash
+        run: uv run python scripts/build.py "${{ steps.version.outputs.version }}"
+
+      - name: Attach binary to release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64  # v3.0.3
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: dist/pysteg-${{ steps.version.outputs.version }}-${{ matrix.target }}${{ matrix.ext }}
