@@ -20,5 +20,7 @@ dist
 *.xcf
 .DS_Store
 
+# Exceptions for specific files
+!assets/icons/*.png
 !tests/fixtures/*.png
 !tests/fixtures/*.jpg
