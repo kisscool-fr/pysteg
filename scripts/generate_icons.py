@@ -113,7 +113,14 @@ def write_icns(master: Image.Image) -> None:
             resized(master, size).save(iconset_dir / filename)
 
         subprocess.run(  # noqa: S603
-            ["/usr/bin/iconutil", "-c", "icns", str(iconset_dir), "-o", str(ICNS_OUTPUT)],
+            [
+                "/usr/bin/iconutil",
+                "-c",
+                "icns",
+                str(iconset_dir),
+                "-o",
+                str(ICNS_OUTPUT),
+            ],
             check=True,
         )
     print(f"wrote {ICNS_OUTPUT}")
