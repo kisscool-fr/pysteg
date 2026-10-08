@@ -89,3 +89,8 @@ release bump="patch":
 # Build a standalone binary for the host OS (version defaults to pyproject)
 build version="":
     uv run python scripts/build.py {{ version }}
+
+# Remove build artifacts created by the build command (build/ and dist/)
+clean-build:
+    echo Cleaning build artifacts...
+    uv run python -c "import shutil; shutil.rmtree('build', ignore_errors=True); shutil.rmtree('dist', ignore_errors=True)"
