@@ -19,3 +19,5 @@ dist
 *.jpg
 *.xcf
 .DS_Store
+
+!assets/icons/*.png
