@@ -19,3 +19,6 @@ dist
 *.jpg
 *.xcf
 .DS_Store
+
+!tests/fixtures/*.png
+!tests/fixtures/*.jpg
