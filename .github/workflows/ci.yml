@@ -13,63 +13,28 @@ jobs:
   setup:
     name: setup
     runs-on: ubuntu-22.04
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+      # uv sync --locked also fails when uv.lock is out of date
+      - name: Set up Python and uv
+        uses: ./.github/actions/setup-python-uv
         with:
-          python-version-file: ".python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
-        with:
-          version: "0.12.15"
-
-      - name: Check lock file
-        run: uv lock --check
-
-      - name: Install dependencies
-        run: uv sync
-
-      - name: Cache environment
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        with:
-          path: |
-            .venv
-            .uv-cache
-          key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}
+          environment: save
 
   check:
     name: check
     needs: [setup]
     runs-on: ubuntu-22.04
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+      - name: Set up Python and uv
+        uses: ./.github/actions/setup-python-uv
         with:
-          python-version-file: ".python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
-        with:
-          version: "0.12.15"
-
-      - name: Restore environment cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        with:
-          path: |
-            .venv
-            .uv-cache
-          key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}
+          environment: restore
 
       - name: Ruff check (app)
         run: uv run ruff check ./app/
@@ -83,76 +48,18 @@ jobs:
       - name: Pyright
         run: uv run pyright ./app/ ./tests/ --threads 4
 
-  security-audit:
-    name: security-audit
-    needs: [check]
-    runs-on: ubuntu-22.04
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
-        with:
-          python-version-file: ".python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
-        with:
-          version: "0.12.15"
-
-      - name: Restore environment cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        with:
-          path: |
-            .venv
-            .uv-cache
-          key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}
-
-      - name: pip-audit
-        run: uv run pip-audit .
-        continue-on-error: true
-
-      - name: Bandit (SAST)
-        run: uv run bandit -c pyproject.toml -r app/
-
-      - name: Gitleaks
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e  # v3.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_ENABLE_COMMENTS: false
-
   test:
     name: test
     needs: [check]
     runs-on: ubuntu-22.04
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/.uv-cache
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+      - name: Set up Python and uv
+        uses: ./.github/actions/setup-python-uv
         with:
-          python-version-file: ".python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
-        with:
-          version: "0.12.15"
-
-      - name: Restore environment cache
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        with:
-          path: |
-            .venv
-            .uv-cache
-          key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}
+          environment: restore
 
       - name: Pytest
         run: uv run pytest
