@@ -1,10 +1,29 @@
-![PySteg app icon](assets/icons/icon.png)
+<p align="center">
+  <img src="assets/icons/icon.png" alt="PySteg app icon" width="128" height="128">
+</p>
 
-# PySteg
+<h1 align="center">PySteg</h1>
 
-[![CI](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml"><img src="https://github.com/kisscool-fr/pysteg/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/kisscool-fr/pysteg/actions/workflows/security.yml"><img src="https://github.com/kisscool-fr/pysteg/actions/workflows/security.yml/badge.svg?branch=main" alt="Security"></a>
+  <a href="https://github.com/kisscool-fr/pysteg/releases/latest"><img src="https://img.shields.io/github/v/release/kisscool-fr/pysteg" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/kisscool-fr/pysteg" alt="License"></a>
+</p>
 
-A simple GUI for steganography: hide and reveal secret messages in images, with optional AES-256-GCM encryption and Argon2id key derivation.
+<p align="center">
+  <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fkisscool-fr%2Fpysteg%2Fmain%2Fpyproject.toml" alt="Python version">
+  <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv"></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
+  <a href="https://microsoft.github.io/pyright/"><img src="https://microsoft.github.io/pyright/img/pyright_badge.svg" alt="Checked with pyright"></a>
+  <a href="https://github.com/PyCQA/bandit"><img src="https://img.shields.io/badge/security-bandit-yellow.svg" alt="Security: bandit"></a>
+  <a href="https://github.com/gitleaks/gitleaks"><img src="https://img.shields.io/badge/protected%20by-gitleaks-blue" alt="Protected by gitleaks"></a>
+</p>
+
+<p align="center">
+  A simple GUI for steganography: hide and reveal secret messages in images,<br>
+  with optional AES-256-GCM encryption and Argon2id key derivation.
+</p>
 
 Built as a replacement for [Steganozorus](https://thomasnerrant.com/steganozorus.htm) © 2002 – [Thomas Nerrant](https://thomasnerrant.com/).
 
