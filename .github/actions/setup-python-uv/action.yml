@@ -1,0 +1,60 @@
+name: Set up Python and uv
+description: >
+  Install Python (from .python-version) and uv, then prepare the project
+  environment. Run actions/checkout before this action.
+
+inputs:
+  uv:
+    description: Install uv ("true" or "false").
+    default: "true"
+  environment:
+    description: >
+      How to prepare the environment:
+      "none" (nothing),
+      "sync" (uv sync --locked),
+      "save" (uv sync --locked, then save .venv and the uv cache for later jobs),
+      "restore" (restore the environment saved by a previous "save" job).
+    default: "sync"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+      with:
+        python-version-file: ".python-version"
+
+    - name: Install uv
+      if: inputs.uv == 'true'
+      uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
+      with:
+        version: "0.12.15"
+
+    # Keep the uv cache inside the workspace so it can be cached with .venv
+    - name: Configure uv cache directory
+      if: inputs.environment == 'save' || inputs.environment == 'restore'
+      shell: bash
+      run: echo "UV_CACHE_DIR=${GITHUB_WORKSPACE}/.uv-cache" >> "$GITHUB_ENV"
+
+    - name: Install dependencies
+      if: inputs.environment == 'sync' || inputs.environment == 'save'
+      shell: bash
+      run: uv sync --locked
+
+    - name: Save environment
+      if: inputs.environment == 'save'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        path: |
+          .venv
+          .uv-cache
+        key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}
+
+    - name: Restore environment
+      if: inputs.environment == 'restore'
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        path: |
+          .venv
+          .uv-cache
+        key: ${{ runner.os }}-uv-env-${{ hashFiles('uv.lock') }}-${{ hashFiles('.python-version') }}

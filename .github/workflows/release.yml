@@ -16,9 +16,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        uses: ./.github/actions/setup-python-uv
         with:
-          python-version-file: ".python-version"
+          uv: "false"
+          environment: none
 
       - name: Extract version from tag
         id: version
@@ -62,18 +63,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
-        with:
-          python-version-file: ".python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
-        with:
-          version: "0.12.15"
-
-      - name: Install dependencies
-        run: uv sync
+      - name: Set up Python and uv
+        uses: ./.github/actions/setup-python-uv
 
       - name: Extract version from tag
         id: version

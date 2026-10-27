@@ -23,7 +23,10 @@ updates:
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
-    directory: "/"
+    # "/" only covers .github/workflows; list the composite actions explicitly
+    directories:
+      - "/"
+      - "/.github/actions/*"
     target-branch: "main"
     schedule:
       interval: "weekly"
