@@ -90,10 +90,13 @@ uv run -m app
 ```
 
 1. Choose **Hide** or **Reveal** mode.
-2. Enter the text to hide, or leave the field empty in reveal mode.
-3. Enter a shared secret (at least 8 characters), or enable plain text mode to skip encryption.
-4. Select a cover image. The output file path is pre-filled automatically; edit it if you want a different name or location.
-5. Run the action.
+2. Drop a cover image on the window, or click **Browse…**. PySteg shows its format, the technique it will use (LSB or EXIF) and how much text it can hold.
+3. In hide mode, type the message; the capacity meter shows how much of the image it uses.
+4. Enter a shared secret (at least 8 characters, typed twice when hiding), or turn **Encrypt with a shared secret** off to store plain text.
+5. In hide mode, check the output path (pre-filled next to the cover image) or click **Change…**.
+6. Click the action button or press Ctrl+Enter (⌘+Return on macOS). The button stays disabled, with the reason underneath, until everything is valid.
+
+See [docs/design/DESIGN.md](docs/design/DESIGN.md) for the reasoning behind the interface.
 
 ## Development
 
