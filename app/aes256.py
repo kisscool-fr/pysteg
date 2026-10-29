@@ -8,6 +8,10 @@ from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
 # Constants for AES-256 encryption
 _SALT_SIZE = 16
 _NONCE_SIZE = 12
+_TAG_SIZE = 16
+
+# Bytes added to the plaintext before base64: salt + nonce + GCM tag.
+ENCRYPTION_OVERHEAD = _SALT_SIZE + _NONCE_SIZE + _TAG_SIZE
 
 # Argon2 parameters: memory_cost: 64 MiB, time_cost: 3 passes, lanes: 1 thread.
 _ARGON2_MEMORY_COST = 65536
