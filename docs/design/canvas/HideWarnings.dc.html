@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PySteg — Hide, warnings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#141518}
+a{color:#7AAEFF}a:hover{color:#A6C8FF}
+</style>
+</helmet>
+<div style="width: 440px; height: 900px; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 22px; background: #141518; color: #ECEDEE; font-family: Inter, -apple-system, 'Segoe UI', Ubuntu, sans-serif; font-size: 14px;">
+
+  <div style="display: flex; gap: 4px; padding: 4px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+    <button type="button" aria-pressed="true" style="flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 7px; background: #2B2F35; color: #ECEDEE; font: 600 14px Inter, sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      Hide
+    </button>
+    <button type="button" aria-pressed="false" style="flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 7px; background: transparent; color: #A1A5AC; font: 500 14px Inter, sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+      Reveal
+    </button>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #1F3A2C; color: #5FD39A; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      Cover image
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+      <div style="width: 56px; height: 56px; flex-shrink: 0; border-radius: 6px; background: #2B2F35; color: #8A8F97; display: flex; align-items: center; justify-content: center;" aria-label="Image thumbnail placeholder" role="img">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+      </div>
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">IMG_2044.jpg</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #A1A5AC;">
+          <span style="padding: 1px 6px; border-radius: 4px; background: #33291A; color: #F0BE6A; font-weight: 600; font-size: 11px;">EXIF</span>
+          JPEG · 4032 × 3024 · 3.1 MB
+        </div>
+      </div>
+      <button type="button" aria-label="Remove image" style="width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; color: #A1A5AC; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    </div>
+    <div style="font-size: 12px; line-height: 1.45; color: #A1A5AC;">Hidden in the file's metadata. Re-saving or uploading the photo often strips it.</div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="height: 6px; border-radius: 3px; background: #2B2F35; overflow: hidden;"><div style="width: 100%; height: 6px; background: #F2765E;"></div></div>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: #F2907D;"><span>Too long for this image</span><span>71 KB of 64 KB</span></div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <label for="msg" style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #3A221D; color: #F2907D; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6"></path><path d="M12 17h.01"></path></svg></span>
+      Message
+    </label>
+    <div style="display: flex; flex-direction: column; background: #25282D; border: 1px solid #B9533F; border-radius: 10px;">
+      <textarea id="msg" aria-describedby="msg-err" style="height: 104px; resize: none; box-sizing: border-box; padding: 10px 12px; border: none; background: transparent; color: #ECEDEE; font: 14px/1.45 Inter, sans-serif; outline: none;">Chapter 1. The harbour was quiet that night, and the lamps along the quay had already been turned down when the first boat came in…</textarea>
+      <div style="display: flex; justify-content: flex-end; padding: 0 12px 8px; font-size: 12px; color: #8A8F97;">72,410 characters</div>
+    </div>
+    <div id="msg-err" style="font-size: 12px; color: #F2907D;">Shorten it by about 7,000 characters, or use a PNG cover image.</div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #1F3A2C; color: #5FD39A; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      Protection
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 14px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: 500;">Encrypt with a shared secret</span>
+          <span style="font-size: 12px; color: #A1A5AC;">Off · message stored as plain text</span>
+        </div>
+        <button type="button" role="switch" aria-checked="false" aria-label="Encrypt with a shared secret" style="width: 44px; height: 26px; flex-shrink: 0; padding: 3px; border: 1px solid #44484F; box-sizing: border-box; border-radius: 13px; background: #2B2F35; display: flex; justify-content: flex-start; align-items: center;"><span style="width: 18px; height: 18px; border-radius: 9px; background: #A1A5AC;"></span></button>
+      </div>
+      <div role="status" style="display: flex; gap: 10px; padding: 10px 12px; border-radius: 8px; background: #2A2214; color: #F0BE6A; font-size: 13px; line-height: 1.45;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+        <span>Anyone who extracts the hidden data can read it. Turn encryption on unless that's fine.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <label for="out" style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #2B2F35; color: #A1A5AC; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</span>
+      Save as
+    </label>
+    <div style="display: flex; gap: 8px;">
+      <input id="out" type="text" value="~/Pictures/IMG_2044_hidden.jpg" style="flex: 1; min-width: 0; height: 40px; box-sizing: border-box; padding: 0 12px; background: #25282D; border: 1px solid #3A3E45; border-radius: 8px; color: #ECEDEE; font: 13px Inter, sans-serif; outline: none;">
+      <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #3A3E45; border-radius: 8px; background: #2B2F35; color: #ECEDEE; font: 500 13px Inter, sans-serif;">Change…</button>
+    </div>
+  </section>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+    <button type="button" disabled style="height: 48px; border: none; border-radius: 10px; background: #2B2F35; color: #8A8F97; font: 600 15px Inter, sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      Hide as plain text
+    </button>
+    <div style="text-align: center; font-size: 12px; color: #A1A5AC;">Fix the message length to continue</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
