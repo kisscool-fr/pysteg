@@ -22,5 +22,6 @@ dist
 
 # Exceptions for specific files
 !assets/icons/*.png
+!docs/screenshots/*.png
 !tests/fixtures/*.png
 !tests/fixtures/*.jpg
