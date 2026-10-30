@@ -19,7 +19,7 @@ render, so open the canvas itself to look at them.
 
 ## What was wrong
 
-The previous window (see [`docs/main-window-macos.png`](../main-window-macos.png))
+The previous window (see [`previous-main-window.png`](previous-main-window.png))
 stacked widgets in code order rather than task order:
 
 - **The order was backwards.** Text, then secret, then image. But the image
