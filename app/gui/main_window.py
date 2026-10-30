@@ -55,7 +55,7 @@ IMAGE_FILTERS = [
 # carry no message (see tests/test_untrusted_images.py).
 _NO_MESSAGE_ERRORS = (IndexError, KeyError, zlib.error)
 
-_RESULT_FOLDER_WIDTH = 200
+_RESULT_FOLDER_WIDTH = 160
 
 
 def show_folder_label() -> str:
