@@ -122,9 +122,10 @@ Colour tokens:
 | `warning` | `#F0BE6A` | plain-text warning, EXIF chip |
 | `danger` | `#F2907D` | errors, over-capacity |
 
-Spacing is on a 4 px grid (cards 12–14 px padding, 22 px between sections),
-radii are 6 (chips), 8 (inputs) and 10 (cards and buttons). Touch targets are
-at least 32 px, primary actions 48 px.
+The layout is compact, in the spirit of Picocrypt: 9 pt text, 10 px window
+margins, 8 px card padding, 12 px between sections. Inputs and buttons are
+24 px high, the primary action 32 px. Radii are 3 (chips), 5 (inputs and
+buttons) and 6 (cards).
 
 ## Cross-platform notes
 
@@ -134,8 +135,9 @@ at least 32 px, primary actions 48 px.
   outlines follow [Lucide](https://lucide.dev) (ISC licence).
 - **Native file dialogs** are kept; drag and drop is added on the image card.
 - **Ctrl+Enter** runs the action (Qt maps it to ⌘+Return on macOS).
-- The window is **resizable** with a minimum of 420×640; the form scrolls when
-  the screen is shorter than the content.
+- The window opens at 340×660, which fits the whole Hide form, and is
+  **resizable** down to 320×480; the form scrolls when the window is shorter
+  than the content.
 - *Show in folder* opens the containing folder through `QDesktopServices`
   (no shell commands), which works on all three platforms.
 

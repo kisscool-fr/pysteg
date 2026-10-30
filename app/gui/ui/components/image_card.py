@@ -22,7 +22,7 @@ from app.gui.ui import icons
 from app.gui.ui import styles
 from app.gui.ui.formatting import human_size
 
-THUMBNAIL_SIZE = 56
+THUMBNAIL_SIZE = 40
 _EMPTY_PAGE = 0
 _LOADED_PAGE = 1
 
@@ -100,18 +100,18 @@ class ImageCard(QStackedWidget):
         t = styles.theme()
         self.drop_zone = QFrame()
         self.drop_zone.setProperty("dropzone", True)
-        self.drop_zone.setMinimumHeight(180)
+        self.drop_zone.setMinimumHeight(104)
 
         layout = QVBoxLayout(self.drop_zone)
-        layout.setContentsMargins(16, 20, 16, 20)
-        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(5)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         icon = QLabel()
-        icon.setFixedSize(44, 44)
+        icon.setFixedSize(28, 28)
         icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        icon.setPixmap(icons.pixmap("upload", t.lsb_text, 22))
-        icon.setStyleSheet(f"background-color: {t.lsb_bg}; border-radius: 22px;")
+        icon.setPixmap(icons.pixmap("upload", t.lsb_text, 14))
+        icon.setStyleSheet(f"background-color: {t.lsb_bg}; border-radius: 14px;")
 
         title = QLabel("Drop an image here")
         title.setProperty("role", "section")
@@ -134,8 +134,8 @@ class ImageCard(QStackedWidget):
         card.setProperty("card", True)
 
         layout = QHBoxLayout(card)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(12)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
 
         self.thumbnail = QLabel()
         self.thumbnail.setObjectName("thumbnail")
@@ -143,7 +143,7 @@ class ImageCard(QStackedWidget):
         self.thumbnail.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         text = QVBoxLayout()
-        text.setSpacing(4)
+        text.setSpacing(2)
         text.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.name_label = QLabel()
         self.name_label.setObjectName("image_name")
@@ -153,7 +153,7 @@ class ImageCard(QStackedWidget):
         )
 
         meta = QHBoxLayout()
-        meta.setSpacing(6)
+        meta.setSpacing(4)
         self.chip = QLabel()
         self.chip.setObjectName("technique_chip")
         self.chip.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -202,7 +202,7 @@ class ImageCard(QStackedWidget):
 
         thumb = _thumbnail(info.path, THUMBNAIL_SIZE)
         if thumb is None:
-            self.thumbnail.setPixmap(icons.pixmap("image", t.muted, 22, 1.75))
+            self.thumbnail.setPixmap(icons.pixmap("image", t.muted, 16, 1.75))
         else:
             self.thumbnail.setPixmap(thumb)
 
