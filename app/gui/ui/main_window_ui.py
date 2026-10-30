@@ -283,8 +283,14 @@ class MainWindowUI:
         self.save_text_button.setIcon(icons.icon("download", t.text, 12))
         row.addWidget(status_icon)
         row.addWidget(self.reveal_status, 1)
-        row.addWidget(self.copy_text_button)
-        row.addWidget(self.save_text_button)
+
+        # Under the text rather than beside the status: the window is too narrow
+        # for both on one line.
+        actions = QHBoxLayout()
+        actions.setSpacing(6)
+        actions.addStretch()
+        actions.addWidget(self.copy_text_button)
+        actions.addWidget(self.save_text_button)
 
         self.revealed_text = QPlainTextEdit()
         self.revealed_text.setObjectName("revealed_text")
@@ -295,6 +301,7 @@ class MainWindowUI:
 
         layout.addLayout(row)
         layout.addWidget(self.revealed_text)
+        layout.addLayout(actions)
         return self.reveal_result
 
     def _build_reveal_help(self) -> QWidget:
