@@ -18,20 +18,23 @@ from app.gui.ui import icons
 from app.gui.ui import styles
 from app.gui.ui.components.callout import Callout
 from app.gui.ui.components.capacity_meter import CapacityMeter
+from app.gui.ui.components.image_card import THUMBNAIL_SIZE
 from app.gui.ui.components.image_card import ImageCard
 from app.gui.ui.components.mode_switch import ModeSwitch
 from app.gui.ui.components.secret_field import SecretField
 from app.gui.ui.components.section_header import SectionHeader
 from app.gui.ui.components.toggle_switch import ToggleSwitch
 
-MINIMUM_SIZE = QSize(420, 640)
-DEFAULT_SIZE = QSize(440, 860)
+MINIMUM_SIZE = QSize(320, 480)
+DEFAULT_SIZE = QSize(340, 660)
 FORM_PAGE = 0
 RESULT_PAGE = 1
 
-_MARGIN = 20
-_SECTION_SPACING = 22
-_SECTION_INNER_SPACING = 10
+_MARGIN = 10
+_SECTION_SPACING = 12
+_SECTION_INNER_SPACING = 5
+_CARD_MARGINS = (8, 8, 8, 8)
+_CARD_SPACING = 6
 
 
 def _label(text: str = "", role: str | None = None, *, wrap: bool = False) -> QLabel:
@@ -100,13 +103,13 @@ class MainWindowUI:
         page.setObjectName("form")
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(16)
+        layout.setSpacing(6)
 
         content = QWidget()
         content.setObjectName("form_content")
         sections = QVBoxLayout(content)
         # Keep the cards clear of the overlay scroll bar.
-        sections.setContentsMargins(0, 0, 12, 0)
+        sections.setContentsMargins(0, 0, 8, 0)
         sections.setSpacing(_SECTION_SPACING)
         sections.addWidget(self._build_image_section())
         sections.addWidget(self._build_message_section())
@@ -114,7 +117,8 @@ class MainWindowUI:
         sections.addWidget(self._build_output_section())
         sections.addWidget(self._build_reveal_result())
         sections.addWidget(self._build_reveal_help())
-        sections.addStretch()
+        # A stretch factor, so spare height never goes to the sections themselves.
+        sections.addStretch(1)
 
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
@@ -124,7 +128,7 @@ class MainWindowUI:
         layout.addWidget(self.scroll, 1)
 
         self.action_button = _button("", "action_button", "primary")
-        self.action_button.setIconSize(QSize(18, 18))
+        self.action_button.setIconSize(QSize(14, 14))
         self.action_hint = _label(role="hint")
         self.action_hint.setObjectName("action_hint")
         self.action_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -164,7 +168,7 @@ class MainWindowUI:
         self.message_input = QPlainTextEdit()
         self.message_input.setObjectName("message_input")
         self.message_input.setPlaceholderText("Type the message to hide…")
-        self.message_input.setFixedHeight(112)
+        self.message_input.setFixedHeight(68)
         self.message_input.setTabChangesFocus(True)
         self.message_header.set_buddy(self.message_input)
 
@@ -186,13 +190,13 @@ class MainWindowUI:
         card = QFrame()
         card.setProperty("card", True)
         inner = QVBoxLayout(card)
-        inner.setContentsMargins(14, 14, 14, 14)
-        inner.setSpacing(12)
+        inner.setContentsMargins(*_CARD_MARGINS)
+        inner.setSpacing(_CARD_SPACING)
 
         row = QHBoxLayout()
-        row.setSpacing(12)
+        row.setSpacing(8)
         labels = QVBoxLayout()
-        labels.setSpacing(2)
+        labels.setSpacing(0)
         self.encrypt_title = _label("Encrypt with a shared secret", "strong")
         self.encrypt_subtitle = _label("AES-256-GCM · Argon2id", "hint")
         labels.addWidget(self.encrypt_title)
@@ -242,7 +246,7 @@ class MainWindowUI:
         self.output_header = SectionHeader(4, "Save as")
 
         row = QHBoxLayout()
-        row.setSpacing(8)
+        row.setSpacing(6)
         self.output_input = QLineEdit()
         self.output_input.setObjectName("output_file_input")
         self.output_input.setPlaceholderText("Output file path")
@@ -265,8 +269,8 @@ class MainWindowUI:
         self.reveal_result.setObjectName("reveal_result")
         self.reveal_result.setProperty("result", "success")
         layout = QVBoxLayout(self.reveal_result)
-        layout.setContentsMargins(14, 14, 14, 14)
-        layout.setSpacing(10)
+        layout.setContentsMargins(*_CARD_MARGINS)
+        layout.setSpacing(_CARD_SPACING)
 
         row = QHBoxLayout()
         row.setSpacing(6)
@@ -274,9 +278,9 @@ class MainWindowUI:
         status_icon.setPixmap(icons.pixmap("check_circle", t.success))
         self.reveal_status = _label(role="status")
         self.copy_text_button = _button("Copy", "copy_text_button", "success")
-        self.copy_text_button.setIcon(icons.icon("copy", t.text, 14))
+        self.copy_text_button.setIcon(icons.icon("copy", t.text, 12))
         self.save_text_button = _button("Save .txt", "save_text_button", "success")
-        self.save_text_button.setIcon(icons.icon("download", t.text, 14))
+        self.save_text_button.setIcon(icons.icon("download", t.text, 12))
         row.addWidget(status_icon)
         row.addWidget(self.reveal_status, 1)
         row.addWidget(self.copy_text_button)
@@ -286,7 +290,7 @@ class MainWindowUI:
         self.revealed_text.setObjectName("revealed_text")
         self.revealed_text.setProperty("revealed", True)
         self.revealed_text.setReadOnly(True)
-        self.revealed_text.setMinimumHeight(120)
+        self.revealed_text.setMinimumHeight(80)
         self.revealed_text.setAccessibleName("Revealed message")
 
         layout.addLayout(row)
@@ -298,8 +302,8 @@ class MainWindowUI:
         self.reveal_help.setObjectName("reveal_help")
         self.reveal_help.setProperty("card", True)
         layout = QVBoxLayout(self.reveal_help)
-        layout.setContentsMargins(14, 14, 14, 14)
-        layout.setSpacing(10)
+        layout.setContentsMargins(*_CARD_MARGINS)
+        layout.setSpacing(_CARD_SPACING)
         layout.addWidget(_label("Still not working?", "strong"))
         layout.addWidget(
             _label(
@@ -326,14 +330,14 @@ class MainWindowUI:
         page.setObjectName("result_page")
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(24)
+        layout.setSpacing(14)
         layout.addStretch()
 
         badge = QLabel()
-        badge.setFixedSize(64, 64)
+        badge.setFixedSize(44, 44)
         badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        badge.setPixmap(icons.pixmap("check", t.success, 30, stroke_width=2.5))
-        badge.setStyleSheet(f"background-color: {t.success_bg}; border-radius: 32px;")
+        badge.setPixmap(icons.pixmap("check", t.success, 22, stroke_width=2.5))
+        badge.setStyleSheet(f"background-color: {t.success_bg}; border-radius: 22px;")
         layout.addWidget(badge, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.result_title = _label("Message hidden", "title")
@@ -346,13 +350,13 @@ class MainWindowUI:
         layout.addWidget(self._build_result_file_card())
 
         actions = QHBoxLayout()
-        actions.setSpacing(8)
+        actions.setSpacing(6)
         self.show_folder_button = _button("", "show_folder_button")
         self.show_folder_button.setIcon(icons.icon("folder", t.text))
         self.test_reveal_button = _button("Test with Reveal", "test_reveal_button")
         self.test_reveal_button.setIcon(icons.icon("unlock", t.text))
         for button in (self.show_folder_button, self.test_reveal_button):
-            button.setMinimumHeight(44)
+            button.setMinimumHeight(30)
             actions.addWidget(button, 1)
         layout.addLayout(actions)
         layout.addStretch()
@@ -368,14 +372,14 @@ class MainWindowUI:
         file_card = QFrame()
         file_card.setProperty("card", True)
         file_row = QHBoxLayout(file_card)
-        file_row.setContentsMargins(12, 12, 12, 12)
-        file_row.setSpacing(12)
+        file_row.setContentsMargins(*_CARD_MARGINS)
+        file_row.setSpacing(8)
         self.result_thumbnail = QLabel()
         self.result_thumbnail.setObjectName("thumbnail")
-        self.result_thumbnail.setFixedSize(56, 56)
+        self.result_thumbnail.setFixedSize(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
         self.result_thumbnail.setAlignment(Qt.AlignmentFlag.AlignCenter)
         file_text = QVBoxLayout()
-        file_text.setSpacing(4)
+        file_text.setSpacing(2)
         self.result_name = _label(role="strong")
         self.result_name.setObjectName("result_name")
         self.result_meta = _label(role="hint")
