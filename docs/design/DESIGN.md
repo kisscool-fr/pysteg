@@ -13,7 +13,7 @@ render, so open the canvas itself to look at them.
 | [`Empty.dc.html`](canvas/Empty.dc.html) | First launch, nothing selected |
 | [`Main.dc.html`](canvas/Main.dc.html) | Hide, form complete and ready |
 | [`HideWarnings.dc.html`](canvas/HideWarnings.dc.html) | Hide, plain text + message too long for the image |
-| [`HideDone.dc.html`](canvas/HideDone.dc.html) | Hide, success (the only light-theme board) |
+| [`HideDone.dc.html`](canvas/HideDone.dc.html) | Hide, success (drawn in light colours; the app ships dark only) |
 | [`Reveal.dc.html`](canvas/Reveal.dc.html) | Reveal, message decrypted |
 | [`RevealError.dc.html`](canvas/RevealError.dc.html) | Reveal, wrong shared secret |
 
@@ -97,9 +97,8 @@ being left (message, secrets, result).
 
 Choices confirmed during review:
 
-- **Dark theme as the reference**, close to the previous Picocrypt-like look.
-  Light tokens exist (board 4) and are used when the OS is in light mode at
-  launch.
+- **Dark theme only**, close to the previous Picocrypt-like look. The app stays
+  dark whatever the OS colour scheme.
 - **A single blue accent** (`#2F6FDB`, white text passes 4.5:1). The mode is
   shown by the segmented control and the button label, not by recolouring the
   window. Green, amber and red are reserved for success, warning and error.
@@ -107,21 +106,21 @@ Choices confirmed during review:
   up any `.ttf`/`.otf` in `assets/fonts/` and falls back to the system UI font
   when Inter is not bundled (see *Status* below).
 
-Dark tokens (light in parentheses):
+Colour tokens:
 
-| Token | Dark | Light | Use |
-|-------|------|-------|-----|
-| `window` | `#141518` | `#F4F5F7` | window background |
-| `panel` | `#1D1F23` | `#FFFFFF` | cards |
-| `field` | `#25282D` | `#F7F8FA` | inputs |
-| `raised` | `#2B2F35` | `#ECEEF1` | secondary buttons, track |
-| `border` | `#3A3E45` | `#DADDE2` | input borders |
-| `text` | `#ECEDEE` | `#17191C` | body text |
-| `muted` | `#A1A5AC` | `#5B616B` | labels, helper text |
-| `accent` | `#2F6FDB` | `#2563D9` | primary button, switch |
-| `success` | `#5FD39A` | `#1F8A56` | checks, revealed panel |
-| `warning` | `#F0BE6A` | `#9A6408` | plain-text warning, EXIF chip |
-| `danger` | `#F2907D` | `#C2412D` | errors, over-capacity |
+| Token | Value | Use |
+|-------|-------|-----|
+| `window` | `#141518` | window background |
+| `panel` | `#1D1F23` | cards |
+| `field` | `#25282D` | inputs |
+| `raised` | `#2B2F35` | secondary buttons, track |
+| `border` | `#3A3E45` | input borders |
+| `text` | `#ECEDEE` | body text |
+| `muted` | `#A1A5AC` | labels, helper text |
+| `accent` | `#2F6FDB` | primary button, switch |
+| `success` | `#5FD39A` | checks, revealed panel |
+| `warning` | `#F0BE6A` | plain-text warning, EXIF chip |
+| `danger` | `#F2907D` | errors, over-capacity |
 
 Spacing is on a 4 px grid (cards 12–14 px padding, 22 px between sections),
 radii are 6 (chips), 8 (inputs) and 10 (cards and buttons). Touch targets are
@@ -157,8 +156,7 @@ The previous controller could only hide and reveal. The design needs:
 
 ## Status
 
-Implemented on `feat/improve-design`: everything above, in the dark and light
-themes.
+Implemented on `feat/improve-design`: everything above.
 
 Not done yet:
 
@@ -168,5 +166,3 @@ Not done yet:
   together with its `LICENSE.txt`.
 - Hide/reveal still run on the UI thread (with a busy cursor). A worker thread
   with a progress state would keep large LSB images responsive.
-- The theme is picked at launch; switching the OS theme while the app runs
-  needs a restart.
