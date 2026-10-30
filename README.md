@@ -95,6 +95,7 @@ uv run -m app
 4. Enter a shared secret (at least 8 characters, typed twice when hiding), or turn **Encrypt with a shared secret** off to store plain text.
 5. In hide mode, check the output path (pre-filled next to the cover image) or click **Change…**.
 6. Click the action button or press Ctrl+Enter (⌘+Return on macOS). The button stays disabled, with the reason underneath, until everything is valid.
+7. After hiding, open the output folder or click **Test with Reveal** to check the new image. After revealing, **Copy** the message or save it as a `.txt` file.
 
 See [docs/design/DESIGN.md](docs/design/DESIGN.md) for the reasoning behind the interface.
 
@@ -134,11 +135,13 @@ The output is written to `dist/`:
 
 ## Screenshots
 
-PySteg is a native desktop app on macOS and Windows. The main window in **Hide** mode:
+PySteg looks the same on Windows, macOS and Linux.
 
-| macOS (v0.4) | Windows (v0.1) |
+| Hide | Message hidden |
 | :---: | :---: |
-| ![PySteg main window on macOS](docs/main-window-macos.png) | ![PySteg main window on Windows](docs/main-window.jpg) |
+| <img src="docs/screenshots/hide.png" alt="Hide mode with a cover image, a message and a shared secret, ready to hide" width="340"> | <img src="docs/screenshots/hide-done.png" alt="Result page after hiding a message, with the new image and its actions" width="340"> |
+| **Reveal** | **Wrong secret** |
+| <img src="docs/screenshots/reveal.png" alt="Reveal mode showing the decrypted message with Copy and Save buttons" width="340"> | <img src="docs/screenshots/reveal-error.png" alt="Reveal mode with a wrong shared secret and troubleshooting tips" width="340"> |
 
 ## Roadmap
 
@@ -152,7 +155,7 @@ PySteg is a native desktop app on macOS and Windows. The main window in **Hide**
 - [ ] More languages
 - [x] Binary release
 - [ ] Code signing
-- [ ] Design improvements
+- [x] Design improvements
 
 > [!NOTE]
 > Release binaries are currently **unsigned**. Planned signing per platform:
