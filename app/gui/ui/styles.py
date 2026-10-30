@@ -65,32 +65,6 @@ DARK = Theme(
     lsb_text="#9CC2FF",
 )
 
-LIGHT = Theme(
-    window="#F4F5F7",
-    panel="#FFFFFF",
-    panel_border="#DADDE2",
-    field="#F7F8FA",
-    raised="#ECEEF1",
-    border="#DADDE2",
-    text="#17191C",
-    muted="#5B616B",
-    accent="#2563D9",
-    accent_hover="#1F56C2",
-    accent_pressed="#1A4AA8",
-    accent_text="#1F56C2",
-    on_accent="#FFFFFF",
-    success="#1F8A56",
-    success_bg="#EAF6EF",
-    success_border="#B9DFC8",
-    warning="#9A6408",
-    warning_bg="#FBF1DD",
-    danger="#C2412D",
-    danger_bg="#FBEAE6",
-    danger_border="#E3A497",
-    lsb_bg="#E3ECFB",
-    lsb_text="#1F56C2",
-)
-
 _PREFERRED_FONTS = (
     "Inter",
     "SF Pro Text",
@@ -103,17 +77,9 @@ _PREFERRED_FONTS = (
 _FONT_EXTENSIONS = (".ttf", ".otf")
 _BASE_FONT_SIZE = 10
 
-_theme: Theme = DARK
-
 
 def theme() -> Theme:
-    return _theme
-
-
-def _detect_theme() -> Theme:
-    """Dark is the reference look; light only when the OS asks for it."""
-    scheme = QGuiApplication.styleHints().colorScheme()  # pyright: ignore[reportOptionalMemberAccess]
-    return LIGHT if scheme == Qt.ColorScheme.Light else DARK
+    return DARK
 
 
 def _load_bundled_fonts() -> None:
@@ -458,10 +424,10 @@ def set_property(widget: QWidget, name: str, value: object) -> None:
 
 
 def apply_app_theme(app: QApplication) -> None:
-    global _theme  # noqa: PLW0603
-    _theme = _detect_theme()
-
+    # Pin Qt's own scheme too, so Fusion's palette (menus, tooltips, dialogs) stays dark
+    # even when the OS is in light mode.
+    QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)  # pyright: ignore[reportOptionalMemberAccess]
     app.setStyle("Fusion")
     _load_bundled_fonts()
     app.setFont(app_font())
-    app.setStyleSheet(global_stylesheet(_theme))
+    app.setStyleSheet(global_stylesheet(DARK))
