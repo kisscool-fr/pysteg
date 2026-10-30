@@ -20,14 +20,14 @@ class Callout(QFrame):
         self.setProperty("callout", kind)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(10)
+        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(6)
 
         t = styles.theme()
         color = t.warning if kind == "warning" else t.danger
         icon_name = "warning" if kind == "warning" else "alert_circle"
         icon = QLabel()
-        icon.setPixmap(icons.pixmap(icon_name, color))
+        icon.setPixmap(icons.pixmap(icon_name, color, 14))
         icon.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.label = QLabel(text)

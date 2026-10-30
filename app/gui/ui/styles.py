@@ -75,7 +75,7 @@ _PREFERRED_FONTS = (
     "Arial",
 )
 _FONT_EXTENSIONS = (".ttf", ".otf")
-_BASE_FONT_SIZE = 10
+_BASE_FONT_SIZE = 9
 
 
 def theme() -> Theme:
@@ -128,7 +128,7 @@ def global_stylesheet(t: Theme) -> str:
     }}
 
     QLabel[role="title"] {{
-        font-size: 16pt;
+        font-size: 13pt;
         font-weight: 600;
     }}
 
@@ -142,41 +142,41 @@ def global_stylesheet(t: Theme) -> str:
 
     QLabel[role="hint"] {{
         color: {t.muted};
-        font-size: 9pt;
+        font-size: 8pt;
     }}
 
     QLabel[role="error"] {{
         color: {t.danger};
-        font-size: 9pt;
+        font-size: 8pt;
     }}
 
     QLabel[role="success"] {{
         color: {t.success};
-        font-size: 9pt;
+        font-size: 8pt;
     }}
 
     QLabel[badge="pending"] {{
         background-color: {t.raised};
         color: {t.muted};
-        border-radius: 10px;
-        font-size: 8pt;
+        border-radius: 8px;
+        font-size: 7pt;
         font-weight: 600;
     }}
 
     QLabel[badge="done"] {{
         background-color: {t.success_bg};
-        border-radius: 10px;
+        border-radius: 8px;
     }}
 
     QLabel[badge="error"] {{
         background-color: {t.danger_bg};
-        border-radius: 10px;
+        border-radius: 8px;
     }}
 
     QLabel[chip="lsb"], QLabel[chip="exif"] {{
-        border-radius: 4px;
-        padding: 1px 6px;
-        font-size: 8pt;
+        border-radius: 3px;
+        padding: 0 4px;
+        font-size: 7pt;
         font-weight: 600;
     }}
 
@@ -192,13 +192,13 @@ def global_stylesheet(t: Theme) -> str:
 
     QLabel#thumbnail {{
         background-color: {t.raised};
-        border-radius: 6px;
+        border-radius: 4px;
     }}
 
     QFrame[card="true"] {{
         background-color: {t.panel};
         border: 1px solid {t.panel_border};
-        border-radius: 10px;
+        border-radius: 6px;
     }}
 
     QFrame[card="true"] QLabel {{
@@ -207,8 +207,8 @@ def global_stylesheet(t: Theme) -> str:
 
     QFrame[dropzone="true"] {{
         background-color: {t.panel};
-        border: 2px dashed {t.border};
-        border-radius: 12px;
+        border: 1px dashed {t.border};
+        border-radius: 6px;
     }}
 
     QFrame[dropzone="true"][dragging="true"] {{
@@ -217,7 +217,7 @@ def global_stylesheet(t: Theme) -> str:
 
     QFrame[callout="warning"] {{
         background-color: {t.warning_bg};
-        border-radius: 8px;
+        border-radius: 5px;
     }}
 
     QFrame[callout="warning"] QLabel {{
@@ -226,7 +226,7 @@ def global_stylesheet(t: Theme) -> str:
 
     QFrame[callout="error"] {{
         background-color: {t.danger_bg};
-        border-radius: 8px;
+        border-radius: 5px;
     }}
 
     QFrame[callout="error"] QLabel {{
@@ -236,7 +236,7 @@ def global_stylesheet(t: Theme) -> str:
     QFrame[result="success"] {{
         background-color: {t.success_bg};
         border: 1px solid {t.success_border};
-        border-radius: 12px;
+        border-radius: 6px;
     }}
 
     QFrame[result="success"] QLabel[role="status"] {{
@@ -247,16 +247,16 @@ def global_stylesheet(t: Theme) -> str:
     QFrame#segmented {{
         background-color: {t.panel};
         border: 1px solid {t.panel_border};
-        border-radius: 10px;
+        border-radius: 6px;
     }}
 
     QPushButton {{
         background-color: {t.raised};
         color: {t.text};
         border: 1px solid {t.border};
-        border-radius: 8px;
-        padding: 0 14px;
-        min-height: 34px;
+        border-radius: 5px;
+        padding: 0 10px;
+        min-height: 24px;
         font-weight: 500;
     }}
 
@@ -272,8 +272,8 @@ def global_stylesheet(t: Theme) -> str:
         background: transparent;
         color: {t.muted};
         border: none;
-        border-radius: 7px;
-        min-height: 36px;
+        border-radius: 4px;
+        min-height: 24px;
     }}
 
     QPushButton[variant="segment"]:checked {{
@@ -290,9 +290,9 @@ def global_stylesheet(t: Theme) -> str:
         background-color: {t.accent};
         color: {t.on_accent};
         border: none;
-        border-radius: 10px;
-        min-height: 48px;
-        font-size: 11pt;
+        border-radius: 6px;
+        min-height: 32px;
+        font-size: 10pt;
         font-weight: 600;
     }}
 
@@ -312,8 +312,8 @@ def global_stylesheet(t: Theme) -> str:
     QPushButton[variant="ghost"] {{
         background: transparent;
         border: none;
-        min-height: 32px;
-        min-width: 32px;
+        min-height: 22px;
+        min-width: 22px;
         padding: 0;
     }}
 
@@ -325,25 +325,29 @@ def global_stylesheet(t: Theme) -> str:
         background-color: {t.success_bg};
         border: 1px solid {t.success_border};
         color: {t.text};
-        min-height: 30px;
-        padding: 0 10px;
-        font-size: 9pt;
+        min-height: 20px;
+        padding: 0 8px;
+        font-size: 8pt;
     }}
 
     QLineEdit, QPlainTextEdit {{
         background-color: {t.field};
         color: {t.text};
         border: 1px solid {t.border};
-        border-radius: 8px;
-        padding: 0 10px;
-        min-height: 38px;
+        border-radius: 5px;
+        padding: 0 6px;
+        min-height: 24px;
         selection-background-color: {t.accent};
         selection-color: {t.on_accent};
     }}
 
     QPlainTextEdit {{
-        padding: 8px 10px;
-        border-radius: 10px;
+        padding: 3px 4px;
+    }}
+
+    QLineEdit {{
+        /* U+2022: Inter's default U+25CF dot is oversized at this text size. */
+        lineedit-password-character: 8226;
     }}
 
     QLineEdit:focus, QPlainTextEdit:focus {{
@@ -367,14 +371,14 @@ def global_stylesheet(t: Theme) -> str:
     QProgressBar {{
         background-color: {t.raised};
         border: none;
-        border-radius: 3px;
-        max-height: 6px;
-        min-height: 6px;
+        border-radius: 2px;
+        max-height: 4px;
+        min-height: 4px;
     }}
 
     QProgressBar::chunk {{
         background-color: {t.accent_text};
-        border-radius: 3px;
+        border-radius: 2px;
     }}
 
     QProgressBar[over="true"]::chunk {{
@@ -383,14 +387,14 @@ def global_stylesheet(t: Theme) -> str:
 
     QScrollBar:vertical {{
         background: transparent;
-        width: 8px;
+        width: 6px;
         margin: 0;
     }}
 
     QScrollBar::handle:vertical {{
         background-color: {t.raised};
-        border-radius: 4px;
-        min-height: 32px;
+        border-radius: 3px;
+        min-height: 24px;
     }}
 
     QScrollBar::handle:vertical:hover {{

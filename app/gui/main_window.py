@@ -434,7 +434,7 @@ class MainWindow(QMainWindow):
         ui.action_button.setEnabled(ready)
         ui.action_button.setText(label)
         ui.action_button.setIcon(
-            icons.icon(icon_name, t.on_accent if ready else t.muted, 18)
+            icons.icon(icon_name, t.on_accent if ready else t.muted, 14)
         )
         ui.action_hint.setText(shortcut_hint() if ready else check.blocker)
 

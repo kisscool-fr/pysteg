@@ -19,7 +19,7 @@ class CapacityMeter(QWidget):
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
+        layout.setSpacing(3)
 
         self.bar = QProgressBar()
         self.bar.setRange(0, _SCALE)

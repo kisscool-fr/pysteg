@@ -26,8 +26,8 @@ class ModeSwitch(QFrame):
         self.setObjectName("segmented")
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(4, 4, 4, 4)
-        layout.setSpacing(4)
+        layout.setContentsMargins(3, 3, 3, 3)
+        layout.setSpacing(3)
 
         self._group = QButtonGroup(self)
         self._group.setExclusive(True)
@@ -38,7 +38,7 @@ class ModeSwitch(QFrame):
             button.setObjectName(f"mode_{mode}")
             button.setProperty("variant", "segment")
             button.setCheckable(True)
-            button.setIconSize(QSize(16, 16))
+            button.setIconSize(QSize(13, 13))
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             button.toggled.connect(partial(self._on_toggled, mode))  # pyright: ignore[reportUnknownMemberType]
             self._group.addButton(button)
