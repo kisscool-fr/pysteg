@@ -90,3 +90,25 @@ class TestValidateOutputFile:
     ) -> None:
         ok, _ = InputValidator.validate_output_file(source, destination)
         assert ok is True
+
+
+# ---------------------------------------------------------------------------
+# validate_confirmation
+# ---------------------------------------------------------------------------
+
+
+class TestValidateConfirmation:
+    def test_matching_returns_true(self) -> None:
+        ok, msg = InputValidator.validate_confirmation("strongpass", "strongpass")
+        assert ok is True
+        assert msg == ""
+
+    def test_empty_confirmation_returns_false(self) -> None:
+        ok, msg = InputValidator.validate_confirmation("strongpass", "")
+        assert ok is False
+        assert msg
+
+    def test_mismatch_returns_false(self) -> None:
+        ok, msg = InputValidator.validate_confirmation("strongpass", "strongPass")
+        assert ok is False
+        assert msg
