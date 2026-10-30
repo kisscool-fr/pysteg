@@ -10,9 +10,9 @@ from PyQt6.QtWidgets import QWidget
 
 from app.gui.ui import styles
 
-_WIDTH = 44
-_HEIGHT = 26
-_KNOB_MARGIN = 3
+_WIDTH = 32
+_HEIGHT = 18
+_KNOB_MARGIN = 2
 
 
 class ToggleSwitch(QAbstractButton):

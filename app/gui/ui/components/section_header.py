@@ -10,8 +10,8 @@ from app.gui.ui import styles
 
 StepState = Literal["pending", "done", "error"]
 
-_BADGE_SIZE = 20
-_BADGE_ICON_SIZE = 12
+_BADGE_SIZE = 16
+_BADGE_ICON_SIZE = 10
 
 
 class SectionHeader(QWidget):
@@ -24,7 +24,7 @@ class SectionHeader(QWidget):
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(8)
+        layout.setSpacing(6)
 
         self.badge = QLabel()
         self.badge.setFixedSize(_BADGE_SIZE, _BADGE_SIZE)
