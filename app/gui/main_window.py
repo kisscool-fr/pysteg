@@ -51,9 +51,9 @@ IMAGE_FILTERS = [
     "TIFF Files (*.tif *.tiff)",
 ]
 
-# stegano.exifHeader.reveal leaks raw zlib / piexif errors on images that
-# carry no message (see tests/test_untrusted_images.py).
-_NO_MESSAGE_ERRORS = (IndexError, KeyError, zlib.error)
+# stegano.exifHeader.reveal leaks raw zlib / piexif / base64 / UTF-8 errors on
+# images that carry no message (see tests/test_untrusted_images.py).
+_NO_MESSAGE_ERRORS = (IndexError, KeyError, ValueError, zlib.error)
 
 _RESULT_FOLDER_WIDTH = 160
 

@@ -71,7 +71,7 @@ class TestLsbCapacity:
         assert revealed == "a" * capacity
 
         with pytest.raises(IndexError):
-            lsb.hide(str(source), "a" * (capacity + 40), generators.eratosthenes())
+            lsb.hide(str(source), "a" * (capacity + 1), generators.eratosthenes())
 
     def test_tiny_image_has_no_room(self) -> None:
         assert lsb_capacity(1, 1) == 0
