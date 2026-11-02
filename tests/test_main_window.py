@@ -1,5 +1,9 @@
+import base64
+import zlib
 from pathlib import Path
+from typing import cast
 
+import piexif  # type: ignore
 import pytest
 from PIL import Image
 from PyQt6.QtWidgets import QApplication
@@ -188,6 +192,21 @@ class TestRoundTrip:
     def test_image_without_message(self, window: MainWindow, cover: Path) -> None:
         window.ui.mode_switch.button(Mode.REVEAL).click()
         window.load_image(str(cover))
+        window.ui.encrypt_toggle.setChecked(False)
+        window.run_action()
+        assert window.ui.image_error.text() == "No hidden message found in this image."
+
+    def test_non_utf8_exif_payload_is_not_a_message(
+        self, window: MainWindow, tmp_path: Path
+    ) -> None:
+        jpeg = tmp_path / "garbled.jpg"
+        description = zlib.compress(base64.b64encode(b"\xff\xfe"))
+        tags = {"0th": {piexif.ImageIFD.ImageDescription: description}}
+        exif = cast(bytes, piexif.dump(tags))  # pyright: ignore[reportUnknownMemberType]
+        Image.new("RGB", (16, 16)).save(jpeg, exif=exif)
+
+        window.ui.mode_switch.button(Mode.REVEAL).click()
+        window.load_image(str(jpeg))
         window.ui.encrypt_toggle.setChecked(False)
         window.run_action()
         assert window.ui.image_error.text() == "No hidden message found in this image."
