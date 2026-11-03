@@ -61,5 +61,12 @@ jobs:
         with:
           environment: restore
 
+      # PyQt6 links against these even with the offscreen platform the GUI tests use.
+      - name: Install Qt system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3
+
       - name: Pytest
         run: uv run pytest

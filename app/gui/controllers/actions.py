@@ -1,5 +1,7 @@
+from dataclasses import dataclass
 from enum import StrEnum
 from enum import auto
+from pathlib import Path
 
 from PIL import Image
 from stegano import exifHeader  # type: ignore
@@ -26,6 +28,29 @@ class Format(StrEnum):
     TIFF = Hiding.EXIF
 
 
+@dataclass(frozen=True)
+class ImageInfo:
+    path: str
+    format: str
+    technique: Hiding | None
+    width: int
+    height: int
+    file_size: int
+    exif_size: int
+
+    @property
+    def name(self) -> str:
+        return Path(self.path).name
+
+    @property
+    def supported(self) -> bool:
+        return self.technique is not None
+
+    @property
+    def within_size_limit(self) -> bool:
+        return self.width * self.height <= MAX_IMAGE_PIXELS
+
+
 class ActionController:
     def __init__(self, model: WindowModel):
         self.model = model
@@ -39,6 +64,23 @@ class ActionController:
     def is_within_size_limit(self, im: Image.Image) -> bool:
         width, height = im.size
         return width * height <= MAX_IMAGE_PIXELS
+
+    def inspect(self, source: str) -> ImageInfo:
+        """Read an image's header without decoding its pixels.
+
+        Raises the same errors as ``Image.open`` for missing or non-image files.
+        """
+        with Image.open(source) as im:
+            exif = im.info.get("exif", b"")
+            return ImageInfo(
+                path=source,
+                format=im.format or "",
+                technique=self.get_hiding_technique(im.format),
+                width=im.size[0],
+                height=im.size[1],
+                file_size=Path(source).stat().st_size,
+                exif_size=len(exif) if isinstance(exif, bytes) else 0,
+            )
 
     def hide(
         self, source: str, destination: str, text: str, plain_text: bool
