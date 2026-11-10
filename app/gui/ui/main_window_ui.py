@@ -1,131 +1,402 @@
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QCheckBox
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtWidgets import QHBoxLayout
+from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QPlainTextEdit
+from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QScrollArea
+from PyQt6.QtWidgets import QStackedWidget
 from PyQt6.QtWidgets import QVBoxLayout
 from PyQt6.QtWidgets import QWidget
 
 from app.constants import APP_NAME
 from app.constants import APP_VERSION
-from app.constants import ICON_LOCK
-from app.constants import ICON_UNLOCK
-from app.gui.models.mode import Mode
+from app.gui.ui import icons
 from app.gui.ui import styles
-from app.gui.ui.components.file_selector import ReadOnlyFileSelector
-from app.gui.ui.components.push_button import PushButton
-from app.gui.ui.components.text_input import TextInput
-from app.gui.ui.components.text_label import TextLabel
-from app.gui.ui.components.text_line import TextLine
+from app.gui.ui.components.callout import Callout
+from app.gui.ui.components.capacity_meter import CapacityMeter
+from app.gui.ui.components.image_card import THUMBNAIL_SIZE
+from app.gui.ui.components.image_card import ImageCard
+from app.gui.ui.components.mode_switch import ModeSwitch
+from app.gui.ui.components.secret_field import SecretField
+from app.gui.ui.components.section_header import SectionHeader
+from app.gui.ui.components.toggle_switch import ToggleSwitch
+
+MINIMUM_SIZE = QSize(320, 480)
+DEFAULT_SIZE = QSize(340, 660)
+FORM_PAGE = 0
+RESULT_PAGE = 1
+
+_MARGIN = 10
+_SECTION_SPACING = 12
+_SECTION_INNER_SPACING = 5
+_CARD_MARGINS = (8, 8, 8, 8)
+_CARD_SPACING = 6
+
+
+def _label(text: str = "", role: str | None = None, *, wrap: bool = False) -> QLabel:
+    label = QLabel(text)
+    if role is not None:
+        label.setProperty("role", role)
+    label.setWordWrap(wrap)
+    return label
+
+
+def _button(text: str, object_name: str, variant: str | None = None) -> QPushButton:
+    button = QPushButton(text)
+    button.setObjectName(object_name)
+    if variant is not None:
+        button.setProperty("variant", variant)
+    button.setCursor(Qt.CursorShape.PointingHandCursor)
+    return button
+
+
+def _section() -> tuple[QWidget, QVBoxLayout]:
+    widget = QWidget()
+    layout = QVBoxLayout(widget)
+    layout.setContentsMargins(0, 0, 0, 0)
+    layout.setSpacing(_SECTION_INNER_SPACING)
+    return widget, layout
 
 
 class MainWindowUI:
+    """Builds the widgets; MainWindow wires the behaviour."""
+
     def setup_ui(self, window: QMainWindow):
         window.setWindowTitle(f"{APP_NAME} v{APP_VERSION}")
-        window.setFixedSize(QSize(318, 557))
+        window.setMinimumSize(MINIMUM_SIZE)
+        window.resize(DEFAULT_SIZE)
 
-        self.central_widget = QWidget()
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(12, 12, 12, 12)
-        self.layout.setSpacing(8)
+        central = QWidget()
+        central.setObjectName("central")
+        root = QVBoxLayout(central)
+        root.setContentsMargins(_MARGIN, _MARGIN, _MARGIN, _MARGIN)
+        root.setSpacing(_SECTION_SPACING)
 
-        self._create_mode_buttons()
-        self._create_accent_bar()
-        self._create_text_section()
-        self._add_separator()
-        self._create_secret_section()
-        self._add_separator()
-        self._create_file_section()
-        self._add_separator()
-        self._create_action_button()
+        self.mode_switch = ModeSwitch()
+        root.addWidget(self.mode_switch)
 
-        self.central_widget.setLayout(self.layout)
-        window.setCentralWidget(self.central_widget)
+        self.pages = QStackedWidget()
+        self.pages.addWidget(self._build_form_page())
+        self.pages.addWidget(self._build_result_page())
+        root.addWidget(self.pages, 1)
 
-        window.status_bar = window.statusBar()  # pyright: ignore[reportAttributeAccessIssue]
-
-        self.apply_mode_style(Mode.HIDE)
+        window.setCentralWidget(central)
 
     def center_window(self, window: QMainWindow):
         screen = window.screen().availableGeometry()  # pyright: ignore[reportOptionalMemberAccess]
-        window_size = window.geometry()
-        x = (screen.width() - window_size.width()) // 2
-        y = (screen.height() - window_size.height()) // 2
-        window.move(x, y)
+        size = window.frameGeometry()
+        height = min(size.height(), screen.height())
+        window.resize(size.width(), height)
+        window.move(
+            screen.x() + (screen.width() - size.width()) // 2,
+            screen.y() + (screen.height() - height) // 2,
+        )
 
-    def _create_mode_buttons(self):
-        rb_layout = QHBoxLayout()
+    # -- form ------------------------------------------------------------------
 
-        self.rb_encrypt = PushButton(f"{ICON_LOCK} Hide", Mode.HIDE)
-        self.rb_decrypt = PushButton(f"{ICON_UNLOCK} Reveal", Mode.REVEAL)
-        rb_layout.addWidget(self.rb_encrypt)
-        rb_layout.addWidget(self.rb_decrypt)
-        self.layout.addLayout(rb_layout)
+    def _build_form_page(self) -> QWidget:
+        page = QWidget()
+        page.setObjectName("form")
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
 
-    def _create_accent_bar(self):
-        self.accent_bar = QFrame()
-        self.accent_bar.setFrameShape(QFrame.Shape.HLine)
-        self.accent_bar.setFixedHeight(2)
-        self.layout.addWidget(self.accent_bar)
+        content = QWidget()
+        content.setObjectName("form_content")
+        sections = QVBoxLayout(content)
+        # Keep the cards clear of the overlay scroll bar.
+        sections.setContentsMargins(0, 0, 8, 0)
+        sections.setSpacing(_SECTION_SPACING)
+        sections.addWidget(self._build_image_section())
+        sections.addWidget(self._build_message_section())
+        sections.addWidget(self._build_protection_section())
+        sections.addWidget(self._build_output_section())
+        sections.addWidget(self._build_reveal_result())
+        sections.addWidget(self._build_reveal_help())
+        # A stretch factor, so spare height never goes to the sections themselves.
+        sections.addStretch(1)
 
-    def _add_separator(self):
-        separator = QFrame()
-        separator.setFrameShape(QFrame.Shape.HLine)
-        separator.setFixedHeight(1)
-        separator.setStyleSheet(styles.separator())
-        self.layout.addWidget(separator)
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFrameShape(QFrame.Shape.NoFrame)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scroll.setWidget(content)
+        layout.addWidget(self.scroll, 1)
 
-    def apply_mode_style(self, mode: Mode):
-        if mode == Mode.HIDE:
-            palette = styles.HIDE_ACCENT
-            self.rb_encrypt.setStyleSheet(styles.mode_button_active(palette))
-            self.rb_decrypt.setStyleSheet(styles.mode_button_inactive())
-        else:
-            palette = styles.REVEAL_ACCENT
-            self.rb_encrypt.setStyleSheet(styles.mode_button_inactive())
-            self.rb_decrypt.setStyleSheet(styles.mode_button_active(palette))
+        self.action_button = _button("", "action_button", "primary")
+        self.action_button.setIconSize(QSize(14, 14))
+        self.action_hint = _label(role="hint")
+        self.action_hint.setObjectName("action_hint")
+        self.action_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.action_button)
+        layout.addWidget(self.action_hint)
+        return page
 
-        self.accent_bar.setStyleSheet(styles.accent_bar(palette))
-        self.action_button.setStyleSheet(styles.action_button(palette))
+    def _build_image_section(self) -> QWidget:
+        section, layout = _section()
+        self.image_header = SectionHeader(1, "Cover image")
+        self.image_card = ImageCard()
+        self.image_header.set_buddy(self.image_card)
+        self.image_note = _label(
+            "Hidden in the file's metadata. Re-saving or uploading the photo often "
+            "strips it.",
+            "hint",
+            wrap=True,
+        )
+        self.image_error = _label(role="error", wrap=True)
+        self.image_error.setObjectName("image_error")
+        self.capacity_meter = CapacityMeter()
 
-    def _create_text_section(self):
-        self.mode_label = TextLabel("Text to hide", "mode_label")
-        self.layout.addWidget(self.mode_label)
+        for widget in (
+            self.image_header,
+            self.image_card,
+            self.image_note,
+            self.image_error,
+            self.capacity_meter,
+        ):
+            layout.addWidget(widget)
+        return section
 
-        self.text_input = TextInput("Enter text here...", "text_input")
-        self.layout.addWidget(self.text_input)
+    def _build_message_section(self) -> QWidget:
+        self.message_section, layout = _section()
+        self.message_header = SectionHeader(2, "Message")
 
-    def _create_secret_section(self):
-        secret_label = TextLabel("Shared secret", "secret_label")
-        self.layout.addWidget(secret_label)
+        self.message_input = QPlainTextEdit()
+        self.message_input.setObjectName("message_input")
+        self.message_input.setPlaceholderText("Type the message to hide…")
+        self.message_input.setFixedHeight(68)
+        self.message_input.setTabChangesFocus(True)
+        self.message_header.set_buddy(self.message_input)
 
-        secret_row = QHBoxLayout()
-        self.secret_input = TextLine("", "secret_input")
-        self.plain_text_checkbox = QCheckBox()
-        self.plain_text_checkbox.setObjectName("plain_text_checkbox")
-        self.plain_text_checkbox.setToolTip("Hide text in the image without encryption")
-        secret_row.addWidget(self.secret_input)
-        secret_row.addWidget(self.plain_text_checkbox)
-        self.layout.addLayout(secret_row)
+        self.message_counter = _label(role="hint")
+        self.message_counter.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.message_error = _label(role="error", wrap=True)
+        self.message_error.setObjectName("message_error")
 
-    def _create_file_section(self):
-        image_label = TextLabel("Cover image", "image_label")
-        self.layout.addWidget(image_label)
+        layout.addWidget(self.message_header)
+        layout.addWidget(self.message_input)
+        layout.addWidget(self.message_counter)
+        layout.addWidget(self.message_error)
+        return self.message_section
 
-        self.button_file = PushButton("Choose file", "select_file_button")
-        self.button_file.setStyleSheet(styles.secondary_button())
-        self.layout.addWidget(self.button_file)
+    def _build_protection_section(self) -> QWidget:
+        section, layout = _section()
+        self.protection_header = SectionHeader(3, "Protection")
 
-        self.file_selector = ReadOnlyFileSelector("No file selected", "file_selector")
-        self.layout.addWidget(self.file_selector)
+        card = QFrame()
+        card.setProperty("card", True)
+        inner = QVBoxLayout(card)
+        inner.setContentsMargins(*_CARD_MARGINS)
+        inner.setSpacing(_CARD_SPACING)
 
-        self.output_file_label = TextLabel("Output file", "output_file_label")
-        self.layout.addWidget(self.output_file_label)
+        row = QHBoxLayout()
+        row.setSpacing(8)
+        labels = QVBoxLayout()
+        labels.setSpacing(0)
+        self.encrypt_title = _label("Encrypt with a shared secret", "strong")
+        self.encrypt_subtitle = _label("AES-256-GCM · Argon2id", "hint")
+        labels.addWidget(self.encrypt_title)
+        labels.addWidget(self.encrypt_subtitle)
+        self.encrypt_toggle = ToggleSwitch("Encrypt with a shared secret")
+        self.encrypt_toggle.setObjectName("encrypt_toggle")
+        self.encrypt_toggle.setChecked(True)
+        row.addLayout(labels, 1)
+        row.addWidget(self.encrypt_toggle)
+        inner.addLayout(row)
 
-        self.output_file_input = TextLine("", "output_file_input")
-        self.output_file_input.setPlaceholderText("Output file path")
-        self.layout.addWidget(self.output_file_input)
+        self.plain_warning = Callout(
+            "warning",
+            "Anyone who extracts the hidden data can read it. "
+            "Turn encryption on unless that's fine.",
+        )
+        inner.addWidget(self.plain_warning)
 
-    def _create_action_button(self):
-        self.action_button = PushButton(f"{ICON_LOCK} Hide Text", "action_button")
-        self.layout.addWidget(self.action_button)
+        self.secret_label = _label("Shared secret", "hint")
+        self.secret_input = SecretField("secret_input", "At least 8 characters")
+        self.secret_label.setBuddy(self.secret_input)
+        self.secret_input.setAccessibleName("Shared secret")
+
+        self.confirm_label = _label("Confirm secret", "hint")
+        self.confirm_input = SecretField("confirm_input", revealable=False)
+        self.confirm_label.setBuddy(self.confirm_input)
+        self.confirm_input.setAccessibleName("Confirm secret")
+
+        self.secret_status = _label(role="hint", wrap=True)
+        self.secret_status.setObjectName("secret_status")
+
+        for widget in (
+            self.secret_label,
+            self.secret_input,
+            self.confirm_label,
+            self.confirm_input,
+            self.secret_status,
+        ):
+            inner.addWidget(widget)
+
+        layout.addWidget(self.protection_header)
+        layout.addWidget(card)
+        return section
+
+    def _build_output_section(self) -> QWidget:
+        self.output_section, layout = _section()
+        self.output_header = SectionHeader(4, "Save as")
+
+        row = QHBoxLayout()
+        row.setSpacing(6)
+        self.output_input = QLineEdit()
+        self.output_input.setObjectName("output_file_input")
+        self.output_input.setPlaceholderText("Output file path")
+        self.output_header.set_buddy(self.output_input)
+        self.change_output_button = _button("Change…", "change_output_button")
+        row.addWidget(self.output_input, 1)
+        row.addWidget(self.change_output_button)
+
+        self.output_error = _label(role="error", wrap=True)
+        self.output_error.setObjectName("output_error")
+
+        layout.addWidget(self.output_header)
+        layout.addLayout(row)
+        layout.addWidget(self.output_error)
+        return self.output_section
+
+    def _build_reveal_result(self) -> QWidget:
+        t = styles.theme()
+        self.reveal_result = QFrame()
+        self.reveal_result.setObjectName("reveal_result")
+        self.reveal_result.setProperty("result", "success")
+        layout = QVBoxLayout(self.reveal_result)
+        layout.setContentsMargins(*_CARD_MARGINS)
+        layout.setSpacing(_CARD_SPACING)
+
+        row = QHBoxLayout()
+        row.setSpacing(6)
+        status_icon = QLabel()
+        status_icon.setPixmap(icons.pixmap("check_circle", t.success))
+        self.reveal_status = _label(role="status")
+        self.copy_text_button = _button("Copy", "copy_text_button", "success")
+        self.copy_text_button.setIcon(icons.icon("copy", t.text, 12))
+        self.save_text_button = _button("Save .txt", "save_text_button", "success")
+        self.save_text_button.setIcon(icons.icon("download", t.text, 12))
+        row.addWidget(status_icon)
+        row.addWidget(self.reveal_status, 1)
+
+        # Under the text rather than beside the status: the window is too narrow
+        # for both on one line.
+        actions = QHBoxLayout()
+        actions.setSpacing(6)
+        actions.addStretch()
+        actions.addWidget(self.copy_text_button)
+        actions.addWidget(self.save_text_button)
+
+        self.revealed_text = QPlainTextEdit()
+        self.revealed_text.setObjectName("revealed_text")
+        self.revealed_text.setProperty("revealed", True)
+        self.revealed_text.setReadOnly(True)
+        self.revealed_text.setMinimumHeight(80)
+        self.revealed_text.setAccessibleName("Revealed message")
+
+        layout.addLayout(row)
+        layout.addWidget(self.revealed_text)
+        layout.addLayout(actions)
+        return self.reveal_result
+
+    def _build_reveal_help(self) -> QWidget:
+        self.reveal_help = QFrame()
+        self.reveal_help.setObjectName("reveal_help")
+        self.reveal_help.setProperty("card", True)
+        layout = QVBoxLayout(self.reveal_help)
+        layout.setContentsMargins(*_CARD_MARGINS)
+        layout.setSpacing(_CARD_SPACING)
+        layout.addWidget(_label("Still not working?", "strong"))
+        layout.addWidget(
+            _label(
+                "If the sender didn't encrypt it, turn “Message is encrypted” off.",
+                "muted",
+                wrap=True,
+            )
+        )
+        layout.addWidget(
+            _label(
+                "If the image was re-saved, resized or sent through a chat app, the "
+                "hidden data may be gone. Ask for the original file.",
+                "muted",
+                wrap=True,
+            )
+        )
+        return self.reveal_help
+
+    # -- hide result -----------------------------------------------------------
+
+    def _build_result_page(self) -> QWidget:
+        t = styles.theme()
+        page = QWidget()
+        page.setObjectName("result_page")
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(14)
+        layout.addStretch()
+
+        badge = QLabel()
+        badge.setFixedSize(44, 44)
+        badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        badge.setPixmap(icons.pixmap("check", t.success, 22, stroke_width=2.5))
+        badge.setStyleSheet(f"background-color: {t.success_bg}; border-radius: 22px;")
+        layout.addWidget(badge, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.result_title = _label("Message hidden", "title")
+        self.result_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.result_description = _label(role="muted", wrap=True)
+        self.result_description.setObjectName("result_description")
+        self.result_description.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.result_title)
+        layout.addWidget(self.result_description)
+        layout.addWidget(self._build_result_file_card())
+
+        actions = QHBoxLayout()
+        actions.setSpacing(6)
+        self.show_folder_button = _button("", "show_folder_button")
+        self.show_folder_button.setIcon(icons.icon("folder", t.text))
+        self.test_reveal_button = _button("Test with Reveal", "test_reveal_button")
+        self.test_reveal_button.setIcon(icons.icon("unlock", t.text))
+        for button in (self.show_folder_button, self.test_reveal_button):
+            button.setMinimumHeight(30)
+            actions.addWidget(button, 1)
+        layout.addLayout(actions)
+        layout.addStretch()
+
+        self.hide_another_button = _button(
+            "Hide another message", "hide_another_button", "primary"
+        )
+        layout.addWidget(self.hide_another_button)
+        return page
+
+    def _build_result_file_card(self) -> QWidget:
+        t = styles.theme()
+        file_card = QFrame()
+        file_card.setProperty("card", True)
+        file_row = QHBoxLayout(file_card)
+        file_row.setContentsMargins(*_CARD_MARGINS)
+        file_row.setSpacing(8)
+        self.result_thumbnail = QLabel()
+        self.result_thumbnail.setObjectName("thumbnail")
+        self.result_thumbnail.setFixedSize(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
+        self.result_thumbnail.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        file_text = QVBoxLayout()
+        file_text.setSpacing(2)
+        self.result_name = _label(role="strong")
+        self.result_name.setObjectName("result_name")
+        self.result_meta = _label(role="hint")
+        file_text.addWidget(self.result_name)
+        file_text.addWidget(self.result_meta)
+        self.copy_path_button = _button("", "copy_path_button", "ghost")
+        self.copy_path_button.setIcon(icons.icon("copy", t.muted))
+        self.copy_path_button.setAccessibleName("Copy file path")
+        self.copy_path_button.setToolTip("Copy file path")
+        file_row.addWidget(self.result_thumbnail)
+        file_row.addLayout(file_text, 1)
+        file_row.addWidget(self.copy_path_button)
+        return file_card

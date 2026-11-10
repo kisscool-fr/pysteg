@@ -33,6 +33,4 @@ def _resource_root() -> Path:
 
 ASSETS_DIRECTORY: Path = _resource_root() / "assets"
 APP_ICON: Path = ASSETS_DIRECTORY / "icons" / "icon.png"
-
-ICON_LOCK = "🔐"
-ICON_UNLOCK = "🔓"
+FONTS_DIRECTORY: Path = ASSETS_DIRECTORY / "fonts"
