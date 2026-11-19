@@ -56,6 +56,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 Common types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `style`, `build`.  
 Examples: `feat(crypto): add keyfile support`, `fix(ui): reset text field on mode switch`.
 
+PRs are squash-merged, so the **PR title** becomes the commit on `main` and must follow the same format (checked by CI). It also drives releases: `fix` → patch, `feat` → minor, `!` / `BREAKING CHANGE` → major (minor while the version is below 1.0).
+
 ## Submitting a pull request
 
 1. Fork the repository and create a branch from `main`.
@@ -63,6 +65,15 @@ Examples: `feat(crypto): add keyfile support`, `fix(ui): reset text field on mod
 3. Ensure `just ci` passes locally.
 4. Open a PR against `main` and fill in the pull request template.
 5. A maintainer will review and may request changes.
+
+## Releases
+
+Releases are automated with [release-please](https://github.com/googleapis/release-please):
+
+1. Every push to `main` opens or updates a release PR that bumps the version in `pyproject.toml` and `uv.lock` and updates `CHANGELOG.md`.
+2. Merging that PR tags the release, publishes the GitHub Release, and attaches binaries for Linux, Windows, and macOS.
+
+Do not bump the version or push tags by hand.
 
 ## Security issues
 

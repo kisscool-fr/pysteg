@@ -21,10 +21,10 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 import PyInstaller.__main__
-from bump_version import read_current_version
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ENTRY_POINT = PROJECT_ROOT / "app" / "__main__.py"
@@ -37,6 +37,13 @@ DIST_DIR = PROJECT_ROOT / "dist"
 
 APP_BUNDLE_NAME = "PySteg"
 DITTO = "/usr/bin/ditto"
+PYPROJECT = PROJECT_ROOT / "pyproject.toml"
+
+
+def read_current_version() -> str:
+    with PYPROJECT.open("rb") as f:
+        data = tomllib.load(f)
+    return data["project"]["version"]
 
 
 def detect_host() -> str:

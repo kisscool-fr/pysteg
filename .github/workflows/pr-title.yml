@@ -1,0 +1,34 @@
+name: PR title
+
+# PRs are squash-merged, so the PR title becomes the commit on main that
+# release-please reads to pick the version bump and changelog section.
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  semantic-title:
+    name: semantic-title
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check Conventional Commits title
+        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50  # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          types: |
+            feat
+            fix
+            perf
+            revert
+            refactor
+            docs
+            style
+            test
+            build
+            ci
+            chore
