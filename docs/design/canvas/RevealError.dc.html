@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PySteg — Reveal, wrong secret</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#141518}
+a{color:#7AAEFF}a:hover{color:#A6C8FF}
+</style>
+</helmet>
+<div style="width: 440px; height: 900px; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 22px; background: #141518; color: #ECEDEE; font-family: Inter, -apple-system, 'Segoe UI', Ubuntu, sans-serif; font-size: 14px;">
+
+  <div style="display: flex; gap: 4px; padding: 4px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+    <button type="button" aria-pressed="false" style="flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 7px; background: transparent; color: #A1A5AC; font: 500 14px Inter, sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      Hide
+    </button>
+    <button type="button" aria-pressed="true" style="flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 7px; background: #2B2F35; color: #ECEDEE; font: 600 14px Inter, sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7AAEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+      Reveal
+    </button>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #1F3A2C; color: #5FD39A; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+      Image with a hidden message
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+      <div style="width: 56px; height: 56px; flex-shrink: 0; border-radius: 6px; background: #2B2F35; color: #8A8F97; display: flex; align-items: center; justify-content: center;" aria-label="Image thumbnail placeholder" role="img">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+      </div>
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">holiday_hidden.png</div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #A1A5AC;">
+          <span style="padding: 1px 6px; border-radius: 4px; background: #23324A; color: #9CC2FF; font-weight: 600; font-size: 11px;">LSB</span>
+          PNG · 1920 × 1080 · 2.6 MB
+        </div>
+      </div>
+      <button type="button" aria-label="Remove image" style="width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; color: #A1A5AC; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+      <span style="width: 20px; height: 20px; border-radius: 10px; background: #3A221D; color: #F2907D; display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6"></path><path d="M12 17h.01"></path></svg></span>
+      Protection
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 14px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 10px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <span style="font-weight: 500;">Message is encrypted</span>
+        <button type="button" role="switch" aria-checked="true" aria-label="Message is encrypted" style="width: 44px; height: 26px; flex-shrink: 0; padding: 3px; border: none; border-radius: 13px; background: #2F6FDB; display: flex; justify-content: flex-end;"><span style="width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF;"></span></button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label for="secret" style="font-size: 12px; color: #A1A5AC;">Shared secret</label>
+        <div style="display: flex; align-items: center; height: 40px; background: #25282D; border: 1px solid #D9654F; border-radius: 8px;">
+          <input id="secret" type="password" value="harbor-key-2" aria-invalid="true" aria-describedby="secret-err" style="flex: 1; min-width: 0; height: 38px; padding: 0 12px; border: none; background: transparent; color: #ECEDEE; font: 14px Inter, sans-serif; letter-spacing: 2px; outline: none;">
+          <button type="button" aria-label="Show secret" style="width: 38px; height: 38px; border: none; background: transparent; color: #A1A5AC; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+        </div>
+        <div id="secret-err" style="display: flex; align-items: flex-start; gap: 6px; font-size: 12px; line-height: 1.45; color: #F2907D;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+          <span>This secret doesn't unlock the message. Check spelling and capitals, then try again.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button type="button" style="height: 48px; flex-shrink: 0; border: none; border-radius: 10px; background: #2F6FDB; color: #FFFFFF; font: 600 15px Inter, sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+    Try again
+  </button>
+
+  <section aria-label="Other possible causes" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #1D1F23; border: 1px solid #2C2F34; border-radius: 12px; font-size: 13px; line-height: 1.5; color: #A1A5AC;">
+    <div style="font-weight: 600; color: #ECEDEE;">Still not working?</div>
+    <div>If the sender didn't encrypt it, turn <span style="color: #ECEDEE;">Message is encrypted</span> off.</div>
+    <div>If the image was re-saved, resized or sent through a chat app, the hidden data may be gone. Ask for the original file.</div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
