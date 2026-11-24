@@ -59,7 +59,7 @@ class SectionHeader(QWidget):
         if state == self._state:
             return
         self._state = state
-        t = styles.theme()
+        t = styles.Colors
         if state == "pending":
             self.badge.clear()
             self.badge.setText(str(self._number))

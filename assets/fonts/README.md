@@ -1,6 +1,6 @@
 # Bundled fonts
 
-PySteg loads every `.ttf` / `.otf` file in this folder at startup and uses
+PySteg loads every `.ttf` file in this folder at startup and uses
 **Inter** when it is present, falling back to the system UI font otherwise.
 
 To bundle Inter, copy `Inter-Regular.ttf`, `Inter-Medium.ttf` and

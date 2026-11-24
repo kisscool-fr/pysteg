@@ -24,7 +24,7 @@ class SecretField(QLineEdit):
         self.visibility_action = None
         if revealable:
             self.visibility_action = self.addAction(
-                icons.icon("eye", styles.theme().muted),
+                icons.icon("eye", styles.Colors.muted),
                 QLineEdit.ActionPosition.TrailingPosition,
             )
             self.visibility_action.setCheckable(True)  # pyright: ignore[reportOptionalMemberAccess]
@@ -42,7 +42,7 @@ class SecretField(QLineEdit):
         if action is None:
             return
         action.setIcon(
-            icons.icon("eye_off" if revealed else "eye", styles.theme().muted)
+            icons.icon("eye_off" if revealed else "eye", styles.Colors.muted)
         )
         label = "Hide secret" if revealed else "Show secret"
         action.setText(label)

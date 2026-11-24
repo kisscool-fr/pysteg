@@ -97,7 +97,7 @@ class ImageCard(QStackedWidget):
         self.updateGeometry()
 
     def _build_empty_page(self) -> QWidget:
-        t = styles.theme()
+        t = styles.Colors
         self.drop_zone = QFrame()
         self.drop_zone.setProperty("dropzone", True)
         self.drop_zone.setMinimumHeight(104)
@@ -129,7 +129,7 @@ class ImageCard(QStackedWidget):
         return self.drop_zone
 
     def _build_loaded_page(self) -> QWidget:
-        t = styles.theme()
+        t = styles.Colors
         card = QFrame()
         card.setProperty("card", True)
 
@@ -182,7 +182,7 @@ class ImageCard(QStackedWidget):
 
     def set_image(self, info: ImageInfo) -> None:
         self._info = info
-        t = styles.theme()
+        t = styles.Colors
 
         self.name_label.setText(info.name)
         self.name_label.setToolTip(info.path)

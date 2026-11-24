@@ -30,7 +30,7 @@ class ToggleSwitch(QAbstractButton):
         return QSize(_WIDTH, _HEIGHT)
 
     def paintEvent(self, e: QPaintEvent | None) -> None:
-        t = styles.theme()
+        t = styles.Colors
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 

@@ -23,7 +23,7 @@ class Callout(QFrame):
         layout.setContentsMargins(8, 6, 8, 6)
         layout.setSpacing(6)
 
-        t = styles.theme()
+        t = styles.Colors
         color = t.warning if kind == "warning" else t.danger
         icon_name = "warning" if kind == "warning" else "alert_circle"
         icon = QLabel()

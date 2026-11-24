@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtGui import QFontDatabase
@@ -10,101 +8,44 @@ from PyQt6.QtWidgets import QWidget
 from app.constants import FONTS_DIRECTORY
 
 
-@dataclass(frozen=True)
-class Theme:
+class Colors:
     """Colour tokens from docs/design/DESIGN.md."""
 
-    window: str
-    panel: str
-    panel_border: str
-    field: str
-    raised: str
-    border: str
-    text: str
-    muted: str
-    accent: str
-    accent_hover: str
-    accent_pressed: str
-    accent_text: str
-    on_accent: str
-    success: str
-    success_bg: str
-    success_border: str
-    warning: str
-    warning_bg: str
-    danger: str
-    danger_bg: str
-    danger_border: str
-    lsb_bg: str
-    lsb_text: str
+    window = "#141518"
+    panel = "#1D1F23"
+    panel_border = "#2C2F34"
+    field = "#25282D"
+    raised = "#2B2F35"
+    border = "#3A3E45"
+    text = "#ECEDEE"
+    muted = "#A1A5AC"
+    accent = "#2F6FDB"
+    accent_hover = "#3D7CE6"
+    accent_pressed = "#2760C2"
+    accent_text = "#7AAEFF"
+    on_accent = "#FFFFFF"
+    success = "#5FD39A"
+    success_bg = "#16261E"
+    success_border = "#24533A"
+    warning = "#F0BE6A"
+    warning_bg = "#2A2214"
+    danger = "#F2907D"
+    danger_bg = "#2C1916"
+    danger_border = "#B9533F"
+    lsb_bg = "#23324A"
+    lsb_text = "#9CC2FF"
 
 
-DARK = Theme(
-    window="#141518",
-    panel="#1D1F23",
-    panel_border="#2C2F34",
-    field="#25282D",
-    raised="#2B2F35",
-    border="#3A3E45",
-    text="#ECEDEE",
-    muted="#A1A5AC",
-    accent="#2F6FDB",
-    accent_hover="#3D7CE6",
-    accent_pressed="#2760C2",
-    accent_text="#7AAEFF",
-    on_accent="#FFFFFF",
-    success="#5FD39A",
-    success_bg="#16261E",
-    success_border="#24533A",
-    warning="#F0BE6A",
-    warning_bg="#2A2214",
-    danger="#F2907D",
-    danger_bg="#2C1916",
-    danger_border="#B9533F",
-    lsb_bg="#23324A",
-    lsb_text="#9CC2FF",
-)
-
-_PREFERRED_FONTS = (
-    "Inter",
-    "SF Pro Text",
-    "Segoe UI",
-    "Cantarell",
-    "Ubuntu",
-    "Helvetica Neue",
-    "Arial",
-)
-_FONT_EXTENSIONS = (".ttf", ".otf")
 _BASE_FONT_SIZE = 9
 
 
-def theme() -> Theme:
-    return DARK
-
-
 def _load_bundled_fonts() -> None:
-    if not FONTS_DIRECTORY.is_dir():
-        return
-    for path in sorted(FONTS_DIRECTORY.iterdir()):
-        if path.suffix.lower() in _FONT_EXTENSIONS:
-            QFontDatabase.addApplicationFont(str(path))
+    for path in sorted(FONTS_DIRECTORY.glob("*.ttf")):
+        QFontDatabase.addApplicationFont(str(path))
 
 
-def _ui_font_family() -> str:
-    available = set(QFontDatabase.families())
-    for family in _PREFERRED_FONTS:
-        if family in available:
-            return family
-    return QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family()
-
-
-def app_font() -> QFont:
-    font = QFont(_ui_font_family(), _BASE_FONT_SIZE)
-    font.setStyleHint(QFont.StyleHint.SansSerif)
-    return font
-
-
-def global_stylesheet(t: Theme) -> str:
+def global_stylesheet() -> str:
+    t = Colors
     return f"""
     QWidget {{
         color: {t.text};
@@ -222,15 +163,6 @@ def global_stylesheet(t: Theme) -> str:
 
     QFrame[callout="warning"] QLabel {{
         color: {t.warning};
-    }}
-
-    QFrame[callout="error"] {{
-        background-color: {t.danger_bg};
-        border-radius: 5px;
-    }}
-
-    QFrame[callout="error"] QLabel {{
-        color: {t.danger};
     }}
 
     QFrame[result="success"] {{
@@ -358,11 +290,6 @@ def global_stylesheet(t: Theme) -> str:
         border-color: {t.danger_border};
     }}
 
-    QLineEdit:disabled {{
-        color: {t.muted};
-        background-color: {t.panel};
-    }}
-
     QPlainTextEdit[revealed="true"] {{
         background-color: {t.window};
         border: none;
@@ -433,5 +360,7 @@ def apply_app_theme(app: QApplication) -> None:
     QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)  # pyright: ignore[reportOptionalMemberAccess]
     app.setStyle("Fusion")
     _load_bundled_fonts()
-    app.setFont(app_font())
-    app.setStyleSheet(global_stylesheet(DARK))
+    font = QFont("Inter", _BASE_FONT_SIZE)
+    font.setStyleHint(QFont.StyleHint.SansSerif)
+    app.setFont(font)
+    app.setStyleSheet(global_stylesheet())

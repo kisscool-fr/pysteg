@@ -413,7 +413,7 @@ class MainWindow(QMainWindow):
 
     def _refresh_action(self, check: _Check, *, hide: bool):
         ui = self.ui
-        t = styles.theme()
+        t = styles.Colors
         encrypt = ui.encrypt_toggle.isChecked()
 
         if hide:
@@ -544,7 +544,7 @@ class MainWindow(QMainWindow):
         self, destination: str, output: ImageInfo | None, *, encrypted: bool
     ):
         ui = self.ui
-        t = styles.theme()
+        t = styles.Colors
         self._last_output = output
         path = Path(destination)
 

@@ -63,7 +63,7 @@ class ModeSwitch(QFrame):
             self.mode_changed.emit(mode)
 
     def _refresh_icons(self) -> None:
-        t = styles.theme()
+        t = styles.Colors
         for mode, _, icon_name in _SEGMENTS:
             button = self._buttons[mode]
             color = t.accent_text if button.isChecked() else t.muted

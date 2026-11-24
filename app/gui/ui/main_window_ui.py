@@ -264,7 +264,7 @@ class MainWindowUI:
         return self.output_section
 
     def _build_reveal_result(self) -> QWidget:
-        t = styles.theme()
+        t = styles.Colors
         self.reveal_result = QFrame()
         self.reveal_result.setObjectName("reveal_result")
         self.reveal_result.setProperty("result", "success")
@@ -332,7 +332,7 @@ class MainWindowUI:
     # -- hide result -----------------------------------------------------------
 
     def _build_result_page(self) -> QWidget:
-        t = styles.theme()
+        t = styles.Colors
         page = QWidget()
         page.setObjectName("result_page")
         layout = QVBoxLayout(page)
@@ -375,7 +375,7 @@ class MainWindowUI:
         return page
 
     def _build_result_file_card(self) -> QWidget:
-        t = styles.theme()
+        t = styles.Colors
         file_card = QFrame()
         file_card.setProperty("card", True)
         file_row = QHBoxLayout(file_card)

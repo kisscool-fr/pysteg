@@ -103,7 +103,7 @@ Choices confirmed during review:
   shown by the segmented control and the button label, not by recolouring the
   window. Green, amber and red are reserved for success, warning and error.
 - **Inter, bundled**, so the app looks the same on every OS. The loader picks
-  up any `.ttf`/`.otf` in `assets/fonts/` and falls back to the system UI font
+  up any `.ttf` in `assets/fonts/` and falls back to the system UI font
   when Inter is not bundled (see *Status* below).
 
 Colour tokens:
