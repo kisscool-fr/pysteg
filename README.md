@@ -129,6 +129,17 @@ The output is written to `dist/`:
 > binaries for all three platforms automatically (see
 > `.github/workflows/release.yml`).
 
+### Verifying a download
+
+Each release ships a `SHA256SUMS` file, and every binary carries a
+[build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)
+proving it was built by this repository's release workflow:
+
+```bash
+sha256sum --check --ignore-missing SHA256SUMS      # macOS: shasum -a 256 -c --ignore-missing SHA256SUMS
+gh attestation verify pysteg-<version>-<os><ext> -R kisscool-fr/pysteg
+```
+
 ## Screenshots
 
 PySteg is a native desktop app on macOS and Windows. The main window in **Hide** mode:
@@ -152,11 +163,13 @@ PySteg is a native desktop app on macOS and Windows. The main window in **Hide**
 - [ ] Design improvements
 
 > [!NOTE]
-> Release binaries are currently **unsigned**. Planned signing per platform:
+> Release binaries are not code-signed yet, but they come with `SHA256SUMS` and
+> build provenance attestations (see [Verifying a download](#verifying-a-download)).
+> Planned signing per platform:
 >
-> - **Linux** — no code signing needed; publishing `SHA256` checksums for verification is enough.
+> - **Linux** — no code signing needed; checksums and attestations are enough.
 > - **Windows** — free Authenticode signing via the [SignPath Foundation](https://signpath.org/) OSS tier (HSM-backed, integrates with GitHub Actions).
-> - **macOS** — requires an Apple Developer Program membership ($99/yr) to sign with a *Developer ID Application* certificate and notarize the `.app`. Until then, bypass Gatekeeper with right-click → **Open** (or `xattr -d com.apple.quarantine <file>`).
+> - **macOS** — requires an Apple Developer Program membership ($99/yr) to sign with a *Developer ID Application* certificate and notarize the `.app`. Until then, allow the app in **System Settings → Privacy & Security → Open Anyway** (or run `xattr -dr com.apple.quarantine PySteg.app`).
 
 ## License
 
