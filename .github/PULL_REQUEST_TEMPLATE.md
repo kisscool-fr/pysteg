@@ -15,6 +15,6 @@
 
 ## Checklist
 
-- [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
+- [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/) (it becomes the squashed commit)
 - [ ] No secrets, sample passphrases, or real payloads committed
 - [ ] Public interfaces remain fully type-annotated (pyright strict)
